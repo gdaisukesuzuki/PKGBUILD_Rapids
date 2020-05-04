@@ -1,6 +1,6 @@
 # PKGBUILD_Rapids
 
-a  procedure of building [Rapids](https://rapids.ai/) on Arch Linux with CUDA environment on  '''Single Nvidia's GPU'''.
+a  procedure of building [Rapids](https://rapids.ai/) under Arch Linux with CUDA environment on  '''Single Nvidia's GPU'''.
 
 ## Order in build
 
