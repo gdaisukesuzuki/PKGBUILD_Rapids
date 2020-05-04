@@ -11,7 +11,7 @@ pkgdesc="RAPIDS Memory Manager"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
-depends=('arrow-cudf<0.16.0' 'gcc8' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs' 'python-dask'  'python-rapids-dask-cuda' 'python-distributed')
+depends=('arrow-cudf<0.16.0' 'gcc8' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs' 'python-dask'  'python-distributed')
 # depends=('arrow-cudf<0.16.0' 'gcc8' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs')
 source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git"
   "cudf_setup.py.patch" "nvst_CMakeLists.txt.patch")
