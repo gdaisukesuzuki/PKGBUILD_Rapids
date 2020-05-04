@@ -1,0 +1,66 @@
+# Maintainer: Guillaume Horel <guillaume.horel@gmail.com>
+
+pkgname='arrow-cudf'
+_pkgname='arrow'
+provides=('arrow')
+conflict='arrow'
+pkgver=0.15.1
+pkgrel=1
+pkgdesc="A columnar in-memory analytics layer for big data."
+arch=('x86_64')
+url="https://arrow.apache.org"
+license=('Apache')
+depends=('python-tensorflow' 'gcc' 'cuda' 'boost-libs' 'brotli' 'double-conversion' 'c-ares-cmake' 'gflags' 'grpc-rapids<1.28.0' 'grpc-rapids>=1.27.0' 'google-glog' 'lz4' 'protobuf' 'rapidjson' 'snappy' 'thrift' 'uriparser' 'zstd')
+checkdepends=('git')
+optdepends=()
+makedepends=('apache-orc' 'boost' 'cmake' 'flatbuffers' 'python-numpy' 'cuda')
+source=("https://github.com/apache/arrow/archive/apache-arrow-$pkgver.tar.gz")
+sha256sums=('ab1c0d371a10b615eccfcead71bb79832245d788f4834cc6b278c03c3872d593')
+
+build(){
+  cd "$srcdir"
+  mkdir -p build
+  cd "$srcdir/build"
+  # CUDA_HOME=/opt/cuda ARROW_BUILD_TOOLCHAIN=/usr ORC_HOME=/usr DOUBLE_CONVERSION_HOME=/usr cmake \
+  # ARROW_BUILD_TOOLCHAIN=/usr ORC_HOME=/usr DOUBLE_CONVERSION_HOME=/usr cmake \
+  #  ../$pkgname-apache-$pkgname-$pkgver/cpp -DARROW_DEPENDENCY_SOURCE=SYSTEM \
+  # CC=/usr/bin/gcc-8 CXX=/usr/bin/g++-8 \
+  CUDA_HOME=/opt/cuda ARROW_BUILD_TOOLCHAIN=/usr ORC_HOME=/usr DOUBLE_CONVERSION_HOME=/usr \
+    cmake \
+   ../$_pkgname-apache-arrow-$pkgver/cpp -DARROW_DEPENDENCY_SOURCE=SYSTEM \
+                                      -DARROW_PYTHON=ON \
+                                      -DCMAKE_BUILD_TYPE=Release \
+                                      -DARROW_BUILD_TESTS=ON \
+                                      -DARROW_ALTIVEC=OFF \
+                                      -DCMAKE_INSTALL_PREFIX="/usr" \
+                                      -DCMAKE_INSTALL_LIBDIR="lib" \
+                                      -DARROW_COMPUTE=ON \
+                                      -DARROW_IPC=ON \
+                                      -DARROW_JEMALLOC=ON \
+                                      -DARROW_ORC=ON \
+                                      -DARROW_PARQUET=ON \
+                                      -DARROW_PLASMA=ON \
+                                      -DARROW_CUDA=ON \
+                                      -DARROW_TENSORFLOW=ON \
+                                      -DARROW_USE_SIMD=ON \
+                                      -DARROW_FLIGHT=ON \
+                                      -DARROW_GANDIVA=OFF \
+                                      -DARROW_PROTOBUF_USE_SHARED=ON \
+                                      -DARROW_GFLAGS_USE_SHARED=ON \
+                                      -DARROW_USE_GLOG=ON \
+                                      -DARROW_WITH_ZSTD=ON \
+                                      -DARROW_WITH_BROTLI=ON \
+                                      -DGTest_SOURCE=BUNDLED \
+                                      -DgRPC_ROOT="/usr"
+  make -j6
+  # CC=/usr/bin/gcc-8 CXX=/usr/bin/g++-8 make
+  #                                     -DARROW_CUDA=ON \
+}
+
+package(){
+  cd "$srcdir/build"
+  make DESTDIR="${pkgdir}" install
+  find "${pkgdir}/usr/lib/" -name "*testing*" -delete
+}
+
+# vim:ts=2:sw=2:et:

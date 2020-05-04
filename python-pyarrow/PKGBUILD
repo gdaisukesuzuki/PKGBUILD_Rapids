@@ -1,0 +1,44 @@
+# Maintainer: Guillaume Horel <guillaume.horel@gmail.com>
+
+pkgname='python-pyarrow-cudf'
+provides=('python-pyarrow')
+conflict='python-pyarrow'
+pkgver=0.15.1
+pkgrel=1
+pkgdesc="A columnar in-memory analytics layer for big data."
+arch=('x86_64')
+url="https://arrow.apache.org"
+license=('Apache')
+depends=('arrow-cudf')
+checkdepends=('git' 'python-hypothesis' 'python-pytest' 'python-pytest-lazy-fixture')
+optdepends=()
+makedepends=('cmake' 'cython')
+source=("https://github.com/apache/arrow/archive/apache-arrow-$pkgver.tar.gz"
+  "tensorflow-abi.patch")
+sha256sums=('ab1c0d371a10b615eccfcead71bb79832245d788f4834cc6b278c03c3872d593'
+            'SKIP')
+
+prepare(){
+  cd "$srcdir"
+  patch -p0 < "tensorflow-abi.patch"
+}
+
+build(){
+  cd "$srcdir/arrow-apache-arrow-$pkgver/python"
+  CUDA_HOME=/opt/cuda ARROW_HOME=/usr PARQUET_HOME=/usr \
+    python setup.py build_ext --build-type=release \
+    --with-parquet --with-plasma --with-flight --with-tensor --with-orc \
+    --with-cuda \
+    --inplace
+}
+
+package(){
+  cd "$srcdir/arrow-apache-arrow-$pkgver/python"
+  CUDA_HOME=/opt/cuda ARROW_HOME=/usr PARQUET_HOME=/usr \
+  python setup.py build_ext --build-type=release \
+  --with-parquet --with-plasma --with-flight --with-tensor --with-orc \
+  --with-cuda \
+  install --root=$pkgdir
+}
+
+# vim:ts=2:sw=2:et:

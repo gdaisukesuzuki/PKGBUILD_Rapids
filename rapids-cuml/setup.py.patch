@@ -1,0 +1,12 @@
+*** cuml-dist/python/setup.py	2020-04-12 22:20:18.367275976 +0900
+--- cuml/python/setup.py	2020-04-12 22:23:27.892237428 +0900
+***************
+*** 123,128 ****
+--- 123,129 ----
+  # on libcumlprims
+  libs = ['cuda',
+          'cuml++',
++         'cudart',
+          'rmm']
+  
+  include_dirs = ['../cpp/src',

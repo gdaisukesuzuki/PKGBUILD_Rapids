@@ -1,0 +1,54 @@
+# Maintainer: Sven-Hendrik Haase <svenstaro@gmail.com>
+# Contributor: bartus <arch-user-repoᘓbartus.33mail.com>
+# Contributor: pingplug <pingplug@foxmail.com>
+# Contributor: cornholio <vigo.the.unholy.carpathian@gmail.com>
+
+pkgname=(python-rapids-dask-cuda)
+_pkgname=dask-cuda
+pkgver=0.14.0a.r72.g2b0ceff
+pkgrel=1
+pkgdesc="RAPIDS Memory Manager"
+arch=('x86_64')
+url="https://rapids.ai/"
+license=('custom')
+
+depends=('gcc8' 'cuda' 'cmake' 'python-numba' 'python-dask' 'python-distributed')
+source=("${_pkgname}::git+https://github.com/rapidsai/dask-cuda.git")
+
+sha256sums=('SKIP')
+
+pkgver() {
+    cd dask-cuda 
+
+    local _version
+    local _revision
+    local _shorthash
+
+    _version="$(git tag | sort -Vr | head -n1 | sed 's/^v//')"
+    _revision="$(git rev-list v"${_version}"..HEAD --count)"
+    _shorthash="$(git rev-parse --short HEAD)"
+
+    printf '%s.r%s.g%s' "$_version" "$_revision" "$_shorthash"
+}
+
+
+
+build() {
+
+  export CC=/usr/bin/gcc-8
+  export CXX=/usr/bin/g++-8
+  cd "${srcdir}"/dask-cuda
+  #export LD_LIBRARY_PATH=/usr/lib:/opt/cuda/lib64:/opt/cuda/extras/CUPTI/lib64:/opt/magma/lib
+  #export PATH=/opt/cuda:$PATH
+  #export NVCC=/opt/cuda/bin/nvcc
+  python setup.py build_ext --inplace
+}
+
+package() {
+  cd "${srcdir}"/dask-cuda
+  python setup.py install --prefix=/usr --root="${pkgdir}" --optimize=1
+
+
+}
+
+# vim:set ts=2 sw=2 et:

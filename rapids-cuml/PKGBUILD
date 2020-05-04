@@ -1,0 +1,106 @@
+# Maintainer: Sven-Hendrik Haase <svenstaro@gmail.com>
+# Contributor: bartus <arch-user-repoᘓbartus.33mail.com>
+# Contributor: pingplug <pingplug@foxmail.com>
+# Contributor: cornholio <vigo.the.unholy.carpathian@gmail.com>
+
+pkgname=(rapids-cuml)
+_pkgname=cuml
+pkgver=0.14.0a.r2239.g2f401f4b3
+pkgrel=1
+pkgdesc="RAPIDS ML"
+arch=('x86_64')
+url="https://rapids.ai/"
+license=('custom')
+depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'zlib' 'blas' 'python' 'cython' 'python-cupy' )
+makedepends=('protobuf-static')
+optional=('openucx')
+source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git"
+  "setup.py.patch" )
+
+# sha256sums=('SKIP')
+sha256sums=('SKIP' 'SKIP')
+# sha256sums=('SKIP' 'SKIP' 'SKIP')
+
+pkgver() {
+    cd cuml
+
+    local _version
+    local _revision
+    local _shorthash
+
+    _version="$(git tag | sort -Vr | head -n1 | sed 's/^v//')"
+    _revision="$(git rev-list v"${_version}"..HEAD --count)"
+    _shorthash="$(git rev-parse --short HEAD)"
+
+    printf '%s.r%s.g%s' "$_version" "$_revision" "$_shorthash"
+}
+
+
+build() {
+  cd "${srcdir}"
+  patch -p0 < setup.py.patch
+  cd "${srcdir}/cuml"
+  git submodule update --init --remote --recursive
+
+  cd cpp
+  mkdir -p build
+  cd build
+  export CC=/usr/bin/gcc-8
+  export CXX=/usr/bin/g++-8
+  export CUDAHOSTCXX=/usr/bin/g++-8
+
+  export CUDA_HOME=/opt/cuda
+  export CUDA_BIN_PATH=$CUDA_HOME
+   #  -DPARALLEL_LEVEL=6 \
+   # -DENABLE_PROTOBUF=ON \
+  cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DBUILD_SHARED_LIBS=ON \
+    -DBUILD_CUML_C_LIBRARY=ON \
+    -DGPU_ARCHS=75 \
+    -DCMAKE_CXX11_ABI=ON \
+    -DNVTX=OFF \
+    -DBUILD_CUML_TESTS=ON \
+    -DBUILD_CUML_MG_TESTS=OFF \
+    -DBUILD_PRIMS_TESTS=OFF \
+    -DBUILD_CUML_EXAMPLES=OFF \
+    -DBUILD_CUML_BENCH=OFF \
+    -DBUILD_CUML_PRIMS_BENCH=OFF \
+    -DBUILD_CUML_STD_COMMS=OFF \
+    -DBUILD_CUML_MPI_COMMS=OFF \
+    -DProtobuf_LIBRARY=/usr/lib/libprotobuf.so 
+    # -DWITH_UCX=OFF \
+    # make -j6
+    sed -i -e 's/-lpthread -ldl/-lprotobuf -ldl/g' ./CMakeFiles/cuml++.dir/link.txt
+    make -j6 VERBOSE=1
+
+    export LD_LIBRARY_PATH=/usr/lib:/opt/cuda/lib64:/opt/cuda/extras/CUPTI/lib64:/opt/magma/lib
+    export CUDA_PATH=/opt/cuda
+    export CUDA_HOME=/opt/cuda
+
+    export PATH=/opt/cuda:$PATH
+    # export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
+    export NVCC='/opt/cuda/bin/nvcc'
+    export CUB_PATH=/usr
+    export LDFLAGS=-L/opt/cuda/lib64
+
+    cd "${srcdir}"/cuml/python
+
+    python setup.py build_ext -j6 --inplace --library-dir="${srcdir}"/cudf/cpp/build --singlegpu --verbose
+
+
+}
+
+package_rapids-cuml() {
+  cd "${srcdir}"/cuml/cpp/build
+
+  make DESTDIR="${pkgdir}" install
+
+  cd "${srcdir}"/cuml/python
+  python setup.py install --single-version-externally-managed  --prefix=/usr --root="${pkgdir}" --optimize=1 --singlegpu
+
+  install -Dm644 ${srcdir}/cuml/LICENSE ${pkgdir}/usr/share/licenses/rapids-cuml/LICENSE
+}
+
+# vim:set ts=2 sw=2 et:

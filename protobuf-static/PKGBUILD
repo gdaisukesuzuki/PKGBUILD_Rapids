@@ -1,0 +1,57 @@
+# Maintainer: Lukas Fleischer <lfleischer@archlinux.org>
+# Contributor: David Runge <dvzrv@archlinux.org>
+# Contributor: Aleksey Filippov <sarum9in@gmail.com>
+# Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+# Contributor: Sven-Hendrik Haase <sh@lutzhaase.com>
+# Contributor: Thomas S Hatch <thatch45@gmail.com>
+# Contributor: Geoffroy Carrier <geoffroy@archlinux.org>
+# Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+
+pkgbase='protobuf'
+pkgname=('protobuf-static')
+pkgver=3.11.4
+pkgrel=1
+pkgdesc="Protocol Buffers - Google's data interchange format"
+arch=('x86_64')
+url='https://developers.google.com/protocol-buffers/'
+license=('BSD')
+depends=('gcc-libs' 'glibc' 'zlib')
+makedepends=('unzip') 
+options=('staticlibs')
+source=("https://github.com/protocolbuffers/$pkgbase/releases/download/v$pkgver/$pkgbase-all-$pkgver.tar.gz"
+	 "no-thirdparty.patch")
+provides=("protobuf=$pkgver")
+conflicts=('protobuf')
+sha512sums=('d0fa36bb4c412dbe41f11c371aba84eb7fd8b751ee1528c75f55b0c141178d7854c2018d4d4433f1484ac1a4a63ff2be5630826aea4c3b8813dab628229da832' 'SKIP')
+
+prepare() {
+  cd "$pkgbase-$pkgver"
+#    rm -rf third_party
+#  patch -p1 < ../no-thirdparty.patch
+  autoreconf -vif
+}
+
+build() {
+  cd "$pkgbase-$pkgver"
+  ./configure --prefix=/usr
+  make  CFLAGS="$CFLAGS -fPIC" CXXFLAGS="$CXXFLAGS -fPIC"
+}
+
+# check() {
+#   cd "$pkgbase-$pkgver"
+#   make check
+# }
+
+package_protobuf-static() {
+  replaces=('protobuf-cpp')
+
+  cd "$pkgbase-$pkgver"
+  make DESTDIR="$pkgdir" install
+
+  install -vDm 644 LICENSE -t "$pkgdir/usr/share/licenses/$pkgname"
+  install -vDm 644 editors/protobuf-mode.el \
+    -t "$pkgdir/usr/share/emacs/site-lisp/"
+  install -vDm 644 editors/proto.vim \
+    -t "${pkgdir}/usr/share/vim/vimfiles/syntax"
+}
+
