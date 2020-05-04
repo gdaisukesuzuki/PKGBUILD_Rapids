@@ -1,6 +1,6 @@
 # PKGBUILD_Rapids
 
-a  procedure of building [Rapids](https://rapids.ai/) on Arch Linux with CUDA environment.
+a  procedure of building [Rapids](https://rapids.ai/) on Arch Linux with CUDA environment on  '''Single Nvidia's GPU'''.
 
 ## Order in build
 
@@ -41,9 +41,26 @@ a  procedure of building [Rapids](https://rapids.ai/) on Arch Linux with CUDA en
 * See [github](https://github.com/rapidsai/rmm)
 ```
 
+7.  [cudf](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cudf/PKGBUILD)
+```
+*  a GPU DataFrame taking place of pandas
+* See [github](https://github.com/rapidsai/cudf)
+```
+
+8.  [cuml](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-ml/PKGBUILD)
+```
+*  A suite of libraries that implement machine learning algorithms presented by Rapids.
+* See [github](https://github.com/rapidsai/cuml)
+```
+
 Optional.  [rapids-dask-cuda](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-dask-cuda/PKGBUILD)
 ```
 * experimental solution.
 * See [github](https://github.com/rapidsai/dask-cuda)
+```
+
+TBD cugraph
+```
+* See [github](https://github.com/rapidsai/cugraph)
 ```
 
