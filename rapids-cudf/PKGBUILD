@@ -15,6 +15,7 @@ depends=('arrow-cudf<0.16.0' 'gcc8' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-
 # depends=('arrow-cudf<0.16.0' 'gcc8' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs')
 source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git"
   "cudf_setup.py.patch" "nvst_CMakeLists.txt.patch")
+makedepends=('python-cmake_setuptools')
 
 sha256sums=('SKIP' 'SKIP' 'SKIP')
 
