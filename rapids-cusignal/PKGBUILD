@@ -1,0 +1,69 @@
+# Maintainer: Sven-Hendrik Haase <svenstaro@gmail.com>
+# Contributor: bartus <arch-user-repoᘓbartus.33mail.com>
+# Contributor: pingplug <pingplug@foxmail.com>
+# Contributor: cornholio <vigo.the.unholy.carpathian@gmail.com>
+
+pkgname=(rapids-cusignal)
+_pkgname=cusignal
+pkgver=0.14.0a.r243.g6359a44
+pkgrel=1
+pkgdesc="RAPIDS ML"
+arch=('x86_64')
+url="https://rapids.ai/"
+license=('custom')
+depends=('python-cupy' 'python-numba')
+source=("${_pkgname}::git+https://github.com/rapidsai/cusignal.git")
+
+sha256sums=('SKIP')
+# sha256sums=('SKIP' 'SKIP')
+# sha256sums=('SKIP' 'SKIP' 'SKIP')
+
+pkgver() {
+    cd cusignal
+
+    local _version
+    local _revision
+    local _shorthash
+
+    _version="$(git tag | sort -Vr | head -n1 | sed 's/^v//')"
+    _revision="$(git rev-list v"${_version}"..HEAD --count)"
+    _shorthash="$(git rev-parse --short HEAD)"
+
+    printf '%s.r%s.g%s' "$_version" "$_revision" "$_shorthash"
+}
+
+
+build() {
+  cd "${srcdir}"
+  # patch -p0 < setup.py.patch
+  cd "${srcdir}/cusignal"
+  git submodule update --init --remote --recursive
+
+
+    export LD_LIBRARY_PATH=/usr/lib:/opt/cuda/lib64:/opt/cuda/extras/CUPTI/lib64:/opt/magma/lib
+    export CUDA_PATH=/opt/cuda
+    export CUDA_HOME=/opt/cuda
+
+    export PATH=/opt/cuda:$PATH
+    export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
+    export NVCC='/opt/cuda/bin/nvcc'
+    export CUB_PATH=/usr
+    export LDFLAGS=-L/opt/cuda/lib64
+    export GPU_ARCHS=75
+
+    cd "${srcdir}"/cusignal/python
+    find . -name '*.py' | xargs fgrep -l "numba.types" | xargs sed -i -e 's/numba.types/numba.core.types/g'
+
+    python setup.py build_ext  --inplace --verbose
+
+
+}
+
+package_rapids-cusignal() {
+  cd "${srcdir}"/cusignal/python
+  python setup.py install --single-version-externally-managed  --prefix=/usr --root="${pkgdir}" --optimize=1
+
+  install -Dm644 ${srcdir}/cusignal/LICENSE ${pkgdir}/usr/share/licenses/rapids-cusignal/LICENSE
+}
+
+# vim:set ts=2 sw=2 et:
