@@ -70,7 +70,7 @@ build() {
   export CUDA_HOME=/opt/cuda
 
   export PATH=/opt/cuda:$PATH
-  export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
+  # export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
   export NVCC='/opt/cuda/bin/nvcc'
   export CUB_PATH=/usr
 
