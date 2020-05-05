@@ -28,26 +28,30 @@ a  procedure of building [Rapids](https://rapids.ai/) under Arch Linux with CUDA
 * AUR provides the same package. However,  AUR only contains older ver (3.11.1)., (current ver. is 3.11.4)
 ```
 
-5.  [cupy](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/cupy/PKGBUILD)
+5.  [python-cmake-setuptools](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-cmake-setuptools/PKGBUILD)
+```
+* Build  Python Library for enabling to run cmake during "python setup.py build"
+```
+6.  [cupy](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/cupy/PKGBUILD)
 ```
 * An implementation of NumPy-compatible  array on CUDA presented by Preferred Networks.
 * AUR provides the same package. However,  AUR only contains older ver (7.2.0). which does not support CUDA 10.2 , (current ver. is 7.4.0) 
 *  See [github](https://github.com/cupy/cupy)
 ```
 
-6.  [rmm](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-rmm/PKGBUILD)
+7.  [rmm](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-rmm/PKGBUILD)
 ```
 * RAPIDS Memory Manager provided by  Rapids.
 * See [github](https://github.com/rapidsai/rmm)
 ```
 
-7.  [cuDF](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cudf/PKGBUILD)
+8.  [cuDF](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cudf/PKGBUILD)
 ```
 *  a GPU DataFrame taking place of pandas
 * See [github](https://github.com/rapidsai/cudf)
 ```
 
-8.  [cuML](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cuml/PKGBUILD)
+9.  [cuML](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cuml/PKGBUILD)
 ```
 *  A suite of libraries that implement machine learning algorithms presented by Rapids.
 * See [github](https://github.com/rapidsai/cuml)
