@@ -38,7 +38,7 @@ build() {
   export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
   export NVCC='/opt/cuda/bin/nvcc'
   export CUB_PATH=/usr
-  LANG=C CFLAGS="-O3 -fPIC -march=skylake" python setup.py build  --verbose 
+  LANG=C  python setup.py build  --verbose 
 nn_path=/usr
 
 }
