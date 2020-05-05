@@ -47,7 +47,7 @@ a  procedure of building [Rapids](https://rapids.ai/) under Arch Linux with CUDA
 * See [github](https://github.com/rapidsai/cudf)
 ```
 
-8.  [cuML](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-ml/PKGBUILD)
+8.  [cuML](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cuml/PKGBUILD)
 ```
 *  A suite of libraries that implement machine learning algorithms presented by Rapids.
 * See [github](https://github.com/rapidsai/cuml)
