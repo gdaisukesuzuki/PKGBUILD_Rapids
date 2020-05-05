@@ -42,8 +42,8 @@ build() {
 
   mkdir -p build
   cd build
+#    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
   cmake .. \
-    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
