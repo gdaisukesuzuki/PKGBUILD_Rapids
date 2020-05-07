@@ -1,0 +1,35 @@
+# Maintainer: Guillaume Horel <guillaume.horel@gmail.com>
+pkgname='libcypher-parser-static'
+_pkgname='libcypher-parser'
+provides=('libcypher-parser')
+conflicts=('libcypher-parser')
+pkgver=0.6.2
+pkgrel=1
+pkgdesc="A columnar in-memory analytics layer for big data."
+arch=('x86_64')
+url="https://github.com/cleishm/libcypher-parser"
+license=('Apache')
+depends=('autoconf' 'automake' 'libtool' 'peg')
+options=('staticlibs')
+source=("https://github.com/cleishm/libcypher-parser/archive/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build(){
+  cd "$srcdir"/${_pkgname}-${pkgver}
+  ./autogen.sh
+  ./configure --prefix='/usr' --enable-shared=yes --enable-static=yes
+   CFLAGS+=" -O3 -fomit-frame-pointer -malign-double -fstrict-aliasing -fPIC"
+  make -j6
+}
+
+package(){
+  cd "$srcdir"/${_pkgname}-${pkgver}
+  # install lib/src/.libs/libcypher-parser.a ${pkgdir}/usr/lib
+  make DESTDIR="${pkgdir}" install install-am install-exec install-data VERBOSE=1
+
+  cd "$srcdir"/${_pkgname}-${pkgver}
+  install -Dm644 LICENSE ${pkgdir}/usr/share/licenses/${pkgname}/LICENSE
+
+}
+
+# vim:ts=2:sw=2:et:
