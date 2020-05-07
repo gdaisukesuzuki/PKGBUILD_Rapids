@@ -57,7 +57,7 @@ a  procedure of building [Rapids](https://rapids.ai/) under Arch Linux with CUDA
 * See [github](https://github.com/rapidsai/cuml)
 ```
 
-Optional.  [cuSignal](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-signal/PKGBUILD)
+Optional.  [cuSignal](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cusignal/PKGBUILD)
 ```
 * GPU accelerated signal processing which may replace scipy signal?
 * See [github](https://github.com/rapidsai/cusignal)
