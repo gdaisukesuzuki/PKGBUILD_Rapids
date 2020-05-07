@@ -13,10 +13,8 @@ arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
 depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static')
-# depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static' 'gunrock-static')
 source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git"
   )
-#  "${_pkgname2}::git+https://github.com/hornet-gt/hornet.git#tag=0.5")
 
 sha256sums=( 'SKIP')
 # sha256sums=('SKIP' 'SKIP')
@@ -59,7 +57,7 @@ build() {
    #  -DPARALLEL_LEVEL=6 \
    # -DENABLE_PROTOBUF=ON \
   cmake .. \
-    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
+    -DCMAKE_CXX_FLAGS="-march=x86-64 -O3" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
