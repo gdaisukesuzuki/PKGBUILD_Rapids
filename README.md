@@ -8,7 +8,7 @@ a  procedure of building NVIDIA's [RAPIDS](https://rapids.ai/) under Arch Linux 
 
 ```
 * Build gRPC 1.27.3 compulsory
-*Apache Arrow cannot be build with grpc Ver 1.28 or higher 
+* Apache Arrow cannot be build with grpc Ver 1.28 or higher 
 ```
 
 2.  [arrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/arrow/PKGBUILD)
