@@ -1,0 +1,75 @@
+# Maintainer: Guillaume Horel <guillaume.horel@gmail.com>
+pkgname='cuhornet'
+_pkgname='cuhornet'
+pkgver=ff3d750
+pkgrel=1
+pkgdesc=""
+arch=('x86_64')
+url="https://github.com/hornet-gt/hornet"
+license=('Apache')
+depends=('gcc8' 'cuda' 'cmake' )
+# source=("${pkgname}::git+https://github.com/hornet-gt/hornet.git"
+source=("${pkgname}::git+https://github.com/rapidsai/cuhornet.git")
+#  "compilerCmakeLists.txt.patch"
+# "DeviceProperties.i.cuh.patch")
+sha256sums=('SKIP')
+# sha256sums=('SKIP' 'SKIP' 'SKIP')
+
+pkgver() {
+    cd cuhornet
+
+    local _version
+    local _revision
+    local _shorthash
+
+    _version="$(git tag | sort -Vr | head -n1 | sed 's/^v//')"
+#    _revision="$(git rev-list v"${_version}"..HEAD --count)"
+    _shorthash="$(git rev-parse --short HEAD)"
+
+    printf '%s' "$_shorthash"
+    # printf '%s.r%s.g%s' "$_version" "$_revision" "$_shorthash"
+}
+
+
+build(){
+  cd "$srcdir"
+#  patch -p0 < compilerCmakeLists.txt.patch
+#  patch -p0 < DeviceProperties.i.cuh.patch
+  cd "$srcdir/$pkgname/hornet/build"
+  export CC=/usr/bin/gcc-8 
+  export CXX=/usr/bin/g++-8 
+  export CUDACXX=/opt/cuda/bin/nvcc
+  # CUDA_HOME=/opt/cuda ARROW_BUILD_TOOLCHAIN=/usr ORC_HOME=/usr DOUBLE_CONVERSION_HOME=/usr cmake \
+  # ARROW_BUILD_TOOLCHAIN=/usr ORC_HOME=/usr DOUBLE_CONVERSION_HOME=/usr cmake \
+  #  ../$pkgname-apache-$pkgname-$pkgver/cpp -DARROW_DEPENDENCY_SOURCE=SYSTEM \
+  # CC=/usr/bin/gcc-8 CXX=/usr/bin/g++-8 \
+  cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+  make -j6
+  cd "$srcdir/$pkgname/hornetsnest/build"
+  cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+  make -j6
+
+  # CC=/usr/bin/gcc-8 CXX=/usr/bin/g++-8 make
+  #                                     -DARROW_CUDA=ON \
+}
+
+package(){
+  mkdir -p ${pkgdir}/usr/include 
+  mkdir -p ${pkgdir}/usr/lib
+  cd "$srcdir/$pkgname/hornet/build"
+  cp -pr ../include/* ${pkgdir}/usr/include
+  cp -pr ../../xlib/include/* ${pkgdir}/usr/include
+  cp -pr ../../primitives/* ${pkgdir}/usr/include
+  install libhornet.a ${pkgdir}/usr/lib
+
+#   make DESTDIR="${pkgdir}" install
+
+  cd "$srcdir/$pkgname/hornetsnest/build"
+   cp -pr ../include/* ${pkgdir}/usr/include
+   install libhornetAlg.a ${pkgdir}/usr/lib
+#   make DESTDIR="${pkgdir}" install
+
+   install -Dm644 ${srcdir}/cuhornet/LICENSE ${pkgdir}/usr/share/licenses/cuhornet/LICENSE
+}
+
+# vim:ts=2:sw=2:et:
