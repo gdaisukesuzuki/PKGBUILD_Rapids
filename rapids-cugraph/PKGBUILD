@@ -6,18 +6,23 @@
 pkgname=(rapids-cugraph)
 _pkgname=cugraph
 _pkgname2=hornet
-pkgver=0.14.0a.r401.g6113b7e9
+pkgver=0.14.0a.r517.g3136bf18
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
 depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static')
+# depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static' 'hortnet')
+# depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static' 'gunrock-static')
 source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git"
+  "CMakeLists.txt.pacth"
+#  "https://raw.githubusercontent.com/hornet-gt/hornet/master/hornet/include/Hornet.hpp"
   )
+#  "${_pkgname2}::git+https://github.com/hornet-gt/hornet.git#tag=0.5")
 
-sha256sums=( 'SKIP')
-# sha256sums=('SKIP' 'SKIP')
+# sha256sums=( 'SKIP')
+sha256sums=('SKIP' 'SKIP')
 
 pkgver() {
     cd cugraph
@@ -37,12 +42,13 @@ pkgver() {
 
 build() {
   cd "${srcdir}"
-#   patch -p0 < setup.py.patch
+  patch -p0 < CMakeLists.txt.pacth
   cd "${srcdir}/cugraph"
   git submodule update --init --remote --recursive
 
-  cd "${srcdir}"/cugraph/cpp/src/ktruss
-  ln -fs "${srcdir}"/cugraph/cpp/build/cuhornet/src/cuhornet/hornet/include/Hornet.hpp .
+#  cd "${srcdir}"/cugraph/cpp/src/ktruss
+  cd "${srcdir}"/cugraph/cpp/include/
+#  ln -fs "${srcdir}"/Hornet.hpp .
   cd "${srcdir}/cugraph"
   cd cpp
   mkdir -p build
@@ -57,11 +63,14 @@ build() {
    #  -DPARALLEL_LEVEL=6 \
    # -DENABLE_PROTOBUF=ON \
   cmake .. \
-    -DCMAKE_CXX_FLAGS="-march=x86-64 -O3" \
+    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
-    -DCMAKE_CXX11_ABI=ON 
+    -DGPU_ARCHS=75 \
+    -DCMAKE_CXX11_ABI=ON \
+                 -DGUNROCK_BUILD_SHARED_LIBS=OFF \
+                -DGUNROCK_BUILD_TESTS=OFF
 
      make  -j1 VERBOSE=1
     # sed -i -e 's/-lpthread -ldl/-lprotobuf -ldl/g' ./CMakeFiles/cugraph++.dir/link.txt
