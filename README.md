@@ -64,13 +64,21 @@ Optional.  [cuSignal](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/mas
 ```
 
 
-Optional.  [rapids-dask-cuda](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-dask-cuda/PKGBUILD)
+TBD.  [rapids-dask-cuda](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-dask-cuda/PKGBUILD)
 ```
 * experimental solution.
 * See [github](https://github.com/rapidsai/dask-cuda)
 ```
 
-TBD cuGraph
+
+TBD. [libcypher-parser](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/libcypher-parser/PKGBUILD)
+
+TBD [rapids-cuhornet](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cuhornet/PKGBUILD)
+```
+* See [github](https://github.com/rapidsai/cuhornet)
+```
+
+TBD [rapids-cuGraph](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cugraph/PKGBUILD)
 ```
 * See [github](https://github.com/rapidsai/cugraph)
 ```
