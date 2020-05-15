@@ -6,13 +6,13 @@
 pkgname=(rapids-cugraph)
 _pkgname=cugraph
 _pkgname2=hornet
-pkgver=0.14.0a.r517.g3136bf18
+pkgver=0.14.0a.r551.g47cb378d
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
-depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static'' 'cuhortnet')
+depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static')
 # depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static' 'hortnet')
 # depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static' 'gunrock-static')
 source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git"
@@ -72,7 +72,7 @@ build() {
                  -DGUNROCK_BUILD_SHARED_LIBS=OFF \
                 -DGUNROCK_BUILD_TESTS=OFF
 
-     make  -j1 VERBOSE=1
+     make  -j6 VERBOSE=1
     # sed -i -e 's/-lpthread -ldl/-lprotobuf -ldl/g' ./CMakeFiles/cugraph++.dir/link.txt
   #  make  VERBOSE=1
   # PARALLEL_LEVEL=4 ./build.sh libcugraph -n
