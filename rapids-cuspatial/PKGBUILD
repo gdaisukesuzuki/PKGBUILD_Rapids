@@ -63,8 +63,8 @@ build() {
 
    #  -DPARALLEL_LEVEL=6 \
    # -DENABLE_PROTOBUF=ON \
+   # -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
   cmake .. \
-    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
@@ -91,7 +91,7 @@ build() {
     export CUDA_HOME=/opt/cuda
 
     export PATH=/opt/cuda:$PATH
-    export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
+    # export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
     export NVCC='/opt/cuda/bin/nvcc'
     export CUB_PATH=/usr
     export LDFLAGS=-L/opt/cuda/lib64
