@@ -5,7 +5,7 @@
 
 pkgname=(rapids-cuml)
 _pkgname=cuml
-pkgver=0.14.0a.r2239.g2f401f4b3
+pkgver=0.14.0a.r2688.g4084790af
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
@@ -54,6 +54,7 @@ build() {
    #  -DPARALLEL_LEVEL=6 \
    # -DENABLE_PROTOBUF=ON \
   cmake .. \
+    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
@@ -62,6 +63,10 @@ build() {
     -DCMAKE_CXX11_ABI=ON \
     -DNVTX=OFF \
     -DBUILD_CUML_TESTS=ON \
+    -DBUILD_CUML_STD_COMMS=OFF \
+    -DWITH_UCX=ON \
+    -DBUILD_CUML_MPI_COMMS=OFF \
+    -DNCCL_PATH=/usr/lib \
     -DBUILD_CUML_MG_TESTS=OFF \
     -DBUILD_PRIMS_TESTS=OFF \
     -DBUILD_CUML_EXAMPLES=OFF \
@@ -80,14 +85,14 @@ build() {
     export CUDA_HOME=/opt/cuda
 
     export PATH=/opt/cuda:$PATH
-    # export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
+    export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
     export NVCC='/opt/cuda/bin/nvcc'
     export CUB_PATH=/usr
     export LDFLAGS=-L/opt/cuda/lib64
 
     cd "${srcdir}"/cuml/python
 
-    python setup.py build_ext -j6 --inplace --library-dir="${srcdir}"/cuml/cpp/build --singlegpu --verbose
+    python setup.py build_ext -j6 --inplace --library-dir="${srcdir}"/cudf/cpp/build  --singlegpu --verbose
 
 
 }
