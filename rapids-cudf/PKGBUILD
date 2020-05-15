@@ -5,7 +5,7 @@
 
 pkgname=(rapids-cudf)
 _pkgname=cudf
-pkgver=0.14.0a.r4051.g5f95c9745
+pkgver=0.14.0a.r4705.gb9853810d
 pkgrel=1
 pkgdesc="RAPIDS Memory Manager"
 arch=('x86_64')
@@ -13,6 +13,7 @@ url="https://rapids.ai/"
 license=('custom')
 depends=('arrow-cudf<0.16.0' 'gcc8' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs' 'python-dask'  'python-distributed' 'protobuf')
 makedepends=('python-cmake_setuptools' 'protobuf-static')
+# depends=('arrow-cudf<0.16.0' 'gcc8' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs')
 source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git"
   "cudf_setup.py.patch" "nvst_CMakeLists.txt.patch")
 
@@ -40,7 +41,8 @@ prepare() {
 
 build() {
   cd "${srcdir}/cudf"
-  git submodule update --init --remote --recursive
+#   git submodule update --init --remote --recursive
+  git submodule sync --recursive && git submodule update --init --recursive
 
   cd cpp
   mkdir -p build
@@ -51,6 +53,7 @@ build() {
 
   #  -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
   cmake .. \
+    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
@@ -70,7 +73,7 @@ build() {
   export CUDA_HOME=/opt/cuda
 
   export PATH=/opt/cuda:$PATH
-  # export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
+  export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
   export NVCC='/opt/cuda/bin/nvcc'
   export CUB_PATH=/usr
 
@@ -111,6 +114,7 @@ package_rapids-cudf() {
   cd "${srcdir}"/cudf/python/dask_cudf
   python setup.py install --single-version-externally-managed --prefix=/usr --root="${pkgdir}" --optimize=1
 
+  install -Dm644 ${srcdir}/cudf/cpp/src/utilities/legacy/*.hpp ${pkgdir}/usr/include/cudf/utilities/legacy/
   install -Dm644 ${srcdir}/cudf/LICENSE ${pkgdir}/usr/share/licenses/rapids-cudf/LICENSE
 
 }
