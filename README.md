@@ -68,12 +68,12 @@ Optional.  [cuSignal](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/mas
 
 
 Optional [rapids-cuGraph](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cugraph/PKGBUILD)
+Optional. [libcypher-parser](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/libcypher-parser/PKGBUILD)
 ```
 * a collection of GPU accelerated graph algorithms
 * See [github](https://github.com/rapidsai/cugraph)
 * libcypher-parser is required before building cuGraph
 ```
-Optional. [libcypher-parser](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/libcypher-parser/PKGBUILD)
 
 Optional [rapids-cuSpatial](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-spatial/PKGBUILD)
 ```
