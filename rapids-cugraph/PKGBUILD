@@ -62,8 +62,8 @@ build() {
   export GPU_ARCHS=75
    #  -DPARALLEL_LEVEL=6 \
    # -DENABLE_PROTOBUF=ON \
+   # -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
   cmake .. \
-    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
