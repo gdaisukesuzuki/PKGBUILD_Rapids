@@ -64,6 +64,24 @@ Optional.  [cuSignal](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/mas
 ```
 
 
+
+
+
+Optional [rapids-cuGraph](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cugraph/PKGBUILD)
+```
+* a collection of GPU accelerated graph algorithms
+* See [github](https://github.com/rapidsai/cugraph)
+* libcypher-parser is required before building cuGraph
+```
+Optional. [libcypher-parser](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/libcypher-parser/PKGBUILD)
+
+Optional [rapids-cuSpatial](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-spatial/PKGBUILD)
+```
+* a library for handling spatial and trajectory data.
+* See [github](https://github.com/rapidsai/cuspatial)
+```
+
+
 TBD.  [rapids-dask-cuda](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-dask-cuda/PKGBUILD)
 ```
 * experimental solution.
@@ -71,15 +89,4 @@ TBD.  [rapids-dask-cuda](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/
 ```
 
 
-TBD. [libcypher-parser](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/libcypher-parser/PKGBUILD)
-
-TBD [rapids-cuhornet](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cuhornet/PKGBUILD)
-```
-* See [github](https://github.com/rapidsai/cuhornet)
-```
-
-TBD [rapids-cuGraph](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cugraph/PKGBUILD)
-```
-* See [github](https://github.com/rapidsai/cugraph)
-```
 
