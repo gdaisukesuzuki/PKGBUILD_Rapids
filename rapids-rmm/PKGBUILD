@@ -5,7 +5,7 @@
 
 pkgname=(rapids-rmm)
 _pkgname=rmm
-pkgver=0.14.0a.r289.g6ce96bd
+pkgver=0.14.0a.r360.g67cd054
 pkgrel=1
 pkgdesc="RAPIDS Memory Manager"
 arch=('x86_64')
@@ -42,8 +42,8 @@ build() {
 
   mkdir -p build
   cd build
-#    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
   cmake .. \
+    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
@@ -53,9 +53,16 @@ build() {
     -DGPU_TARGET="sm_75"
   make -j6
   cd "${srcdir}"/rmm/python
-  #export LD_LIBRARY_PATH=/usr/lib:/opt/cuda/lib64:/opt/cuda/extras/CUPTI/lib64:/opt/magma/lib
-  #export PATH=/opt/cuda:$PATH
-  #export NVCC=/opt/cuda/bin/nvcc
+  export LD_LIBRARY_PATH=/usr/lib:/opt/cuda/lib64:/opt/cuda/extras/CUPTI/lib64:/opt/magma/lib
+  export CUDA_PATH=/opt/cuda
+  export CUDA_HOME=/opt/cuda
+
+  export PATH=/opt/cuda:$PATH
+  export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
+  export NVCC='/opt/cuda/bin/nvcc'
+  export CUB_PATH=/usr
+  export LDFLAGS=-L/opt/cuda/lib64
+
   python setup.py build_ext --inplace --library-dir="${srcdir}/rmm/build"
 }
 
