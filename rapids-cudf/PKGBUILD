@@ -113,7 +113,7 @@ package_rapids-cudf() {
   cd "${srcdir}"/cudf/python/dask_cudf
   python setup.py install --single-version-externally-managed --prefix=/usr --root="${pkgdir}" --optimize=1
 
-  install -Dm644 ${srcdir}/cudf/cpp/src/utilities/legacy/*.hpp ${pkgdir}/usr/include/cudf/utilities/legacy/
+  # install -Dm644 ${srcdir}/cudf/cpp/src/utilities/legacy/*.hpp ${pkgdir}/usr/include/cudf/utilities/legacy/
   install -Dm644 ${srcdir}/cudf/LICENSE ${pkgdir}/usr/share/licenses/rapids-cudf/LICENSE
 
 }
