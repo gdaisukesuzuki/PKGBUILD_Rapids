@@ -11,22 +11,23 @@ a  procedure of building NVIDIA's [RAPIDS](https://rapids.ai/) under Arch Linux 
 * Apache Arrow cannot be build with grpc Ver 1.28 or higher 
 ```
 
-2.  [arrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/arrow/PKGBUILD)
+2.  [protobuf-static](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/protobuf-static/PKGBUILD)
+```
+* Static library of protobuf is required to build cuDF.
+* AUR provides the same package. However,  AUR only contains older ver (3.11.1)., (current ver. is 3.11.4)
+```
+
+3.  [arrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/arrow/PKGBUILD)
 ```
 * Build Apache Arrow 0.15.1 compulsory
 * With Apache Arrow 0.16 or higher, cuDF cannot be build. see [ISSUE](https://github.com/rapidsai/cudf/issues/4605)
 ```
 
-3.  [python-pyarrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-arrow/PKGBUILD)
+4.  [python-pyarrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-arrow/PKGBUILD)
 ```
 * Build  Python Library of Apache Arrow 0.15.1 compulsory
 ```
 
-4.  [protobuf-static](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/protobuf-static/PKGBUILD)
-```
-* Static library of protobuf is required to build cuDF.
-* AUR provides the same package. However,  AUR only contains older ver (3.11.1)., (current ver. is 3.11.4)
-```
 
 5.  [python-cmake-setuptools](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-cmake-setuptools/PKGBUILD)
 ```
