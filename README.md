@@ -88,6 +88,25 @@ TBD.  [rapids-dask-cuda](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/
 * experimental solution.
 * See [github](https://github.com/rapidsai/dask-cuda)
 ```
+## Need for Benchmark
 
+1. [UMAP-Learn](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/umap/PKGBUILD)
+
+```
+* Uniform Manifold Approximation and Projection for Dimension Reduction
+```
+
+2. [XGBoost](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/xgboost/PKGBUILD)
+
+```
+* an optimized distributed gradient boosting library 
+* Builds Library and its Python-Wrapper
+```
+3. [treelite](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/treelite/PKGBUILD)
+
+```
+* a model compiler for efficient deployment of decision tree ensembles 
+* Builds Library and its Python-Wrapper
+```
 
 
