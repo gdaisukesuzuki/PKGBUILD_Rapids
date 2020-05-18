@@ -1,0 +1,78 @@
+# Maintainer: Dmitry Popov <ixaphire@gmail.com>
+
+_name=xgboost
+pkgbase=xgboost
+pkgname=('xgboost'
+         'python-xgboost')
+pkgver=1.1.0
+pkgrel=1
+url='https://github.com/dmlc/xgboost'
+license=('APACHE')
+source=('git+https://github.com/dmlc/xgboost.git#tag=v1.1.0'
+        'python_no_libs.patch')
+depends=('gcc8' 'cuda' 'openmp')
+makedepends=('python-setuptools')
+arch=('x86_64')
+sha256sums=('SKIP'
+            '4940b84afffe9c2be646d0f77bcfb0d8d36aadcabc4a83b40113e1d97ae917b5')
+
+prepare() {
+  cd "${_name}"
+  git submodule sync --recursive && git submodule update --init --recursive
+  patch -p1 < "${srcdir}/python_no_libs.patch"
+}
+
+build() {
+  cd "${_name}"
+  mkdir build
+  cd build
+  export CC=/usr/bin/gcc-8
+  export CXX=/usr/bin/g++-8
+  export CMAKE_CXX_COMPILER=/usr/bin/g++-8
+  cmake ..  -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_CXX_FLAGS="-march=skylake -O3" -DCMAKE_CXX11_ABI=ON -DBUILD_SHARED_LIBS=ON -DUSE_CUDA=ON -DUSE_CUDA=ON -DUSE_OPENMP=ON -DGPU_COMPUTE_VER=75
+  make -j6
+}
+
+package_xgboost() {
+  pkgdesc='An optimized distributed gradient boosting library designed to be highly efficient, flexible and portable'
+  optdepends=('python-xgboost: Python 3 Wrapper')
+
+  cd "${_name}"
+
+  # Install License
+  install -D -m644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+
+  # Install Documentation
+  install -D -m644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+
+  # Install main executable
+  install -Dm755 "xgboost" "${pkgdir}/usr/bin/xgboost"
+
+  # Install shared libraries
+  mkdir -p "${pkgdir}/usr/lib"
+  install -Dm644 lib/*.so "${pkgdir}/usr/lib"
+
+  # Install includes
+  mkdir -p "${pkgdir}/usr/include"
+  cp -r include/xgboost "${pkgdir}/usr/include"
+  cp -r dmlc-core/include/dmlc "${pkgdir}/usr/include"
+  cp -r rabit/include/rabit "${pkgdir}/usr/include"
+
+  # Copy the demos to opt/xgboost
+  mkdir -p "${pkgdir}"/opt/xgboost
+  cp -r demo "${pkgdir}"/opt/xgboost
+}
+
+package_python-xgboost() {
+  pkgdesc='XGBoost Python 3 wrapper'
+  depends=('xgboost'
+           'python'
+           'python-numpy'
+           'python-scipy')
+
+  cd "${_name}/python-package"
+
+  python setup.py install --root="${pkgdir}" --optimize=1
+}
+
+# vim:set ts=2 sw=2 et:

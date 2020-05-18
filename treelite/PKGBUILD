@@ -1,0 +1,79 @@
+# Maintainer: Sven-Hendrik Haase <svenstaro@gmail.com>
+# Contributor: bartus <arch-user-repoᘓbartus.33mail.com>
+# Contributor: pingplug <pingplug@foxmail.com>
+# Contributor: cornholio <Vigo.the.unholy.carpathian@gmail.com>
+
+pkgname=('treelite' 'python-treelite')
+_pkgname=treelite
+pkgver=0.32.r.g8498081.r.g
+pkgrel=1
+pkgdesc="decision tree"
+arch=('x86_64')
+url=""
+license=('custom')
+depends=('cmake' 'fmt' 'xgboost' 'gcc8')
+makedepends=('python-setuptools')
+source=("${_pkgname}::git+https://github.com/dmlc/treelite.git")
+# source=("${_pkgname}::git+https://github.com/dmlc/treelite.git#tag=${pkgver}")
+
+sha256sums=('SKIP')
+
+pkgver() {
+    cd treelite
+
+    local _version
+    local _revision
+    local _shorthash
+
+    _version="$(git tag | sort -Vr | head -n1 | sed 's/^v//')"
+    # _revision="$(git rev-list v"${_version}"..HEAD --count)"
+    _shorthash="$(git rev-parse --short HEAD)"
+
+    printf '%s.r.g%s' "$_version" "$_revision" "$_shorthash"
+}
+
+
+build() {
+  cd "${srcdir}/treelite"
+  # git submodule sync --recursive && git submodule update --init --remote --recursive
+  git submodule update --init --remote --recursive
+
+
+  mkdir -p build
+  cd build
+  export CC=/usr/bin/gcc-8
+  export CXX=/usr/bin/g++-8
+  cmake .. \
+    -DCMAKE_CXX_FLAGS="-march=skylake -O3 -pipe" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DBUILD_SHARED_LIBS=ON \
+    -DBUILD_TESTS=OFF \
+    -DBUILD_BENCHMARKS=OFF \
+    -DCMAKE_CXX11_ABI=ON 
+  make -j6
+  cd "${srcdir}"/treelite/python
+  export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
+
+  python setup.py build_ext --inplace --library-dir="${srcdir}/treelite/build"
+}
+
+package_treelite() {
+  optdepends=('python-treelite: Python 3 Wrapper')
+  cd "${srcdir}"/treelite/build
+  make DESTDIR="${pkgdir}" install
+  rm -rf ${pkgdir}/usr/include/dmlc
+
+  install -Dm644 ${srcdir}/treelite/LICENSE ${pkgdir}/usr/share/licenses/treelite/LICENSE
+}
+
+package_python-treelite() {
+  frprnfd=('python-numpy' 'python-scipy')
+  cd "${srcdir}"/treelite/python
+  python setup.py install --prefix=/usr --root="${pkgdir}" --optimize=1
+
+  install -Dm644 ${srcdir}/treelite/LICENSE ${pkgdir}/usr/share/licenses/python-treelite/LICENSE
+}
+
+
+# vim:set ts=2 sw=2 et:
