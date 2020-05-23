@@ -109,4 +109,10 @@ TBD.  [rapids-dask-cuda](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/
 * Builds Library and its Python-Wrapper
 ```
 
+4. [Benchmark](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/benchmark/cuml_benchmarks.ipynb)
+
+```
+* Benchmark Result 
+```
+See [URL](https://github.com/rapidsai/cuml/blob/branch-0.14/notebooks/tools/cuml_benchmarks.ipynb)
 
