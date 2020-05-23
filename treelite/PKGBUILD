@@ -6,6 +6,7 @@
 pkgname=('treelite' 'python-treelite')
 _pkgname=treelite
 pkgver=0.32.r.g8498081.r.g
+_pkgver=0.32
 pkgrel=1
 pkgdesc="decision tree"
 arch=('x86_64')
@@ -14,7 +15,7 @@ license=('custom')
 depends=('cmake' 'fmt' 'xgboost' 'gcc8')
 makedepends=('python-setuptools')
 source=("${_pkgname}::git+https://github.com/dmlc/treelite.git")
-# source=("${_pkgname}::git+https://github.com/dmlc/treelite.git#tag=${pkgver}")
+# source=("${_pkgname}::git+https://github.com/dmlc/treelite.git#tag=${_pkgver}")
 
 sha256sums=('SKIP')
 
