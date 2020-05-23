@@ -29,7 +29,14 @@ build() {
   export CC=/usr/bin/gcc-8
   export CXX=/usr/bin/g++-8
   export CMAKE_CXX_COMPILER=/usr/bin/g++-8
-  cmake ..  -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_CXX_FLAGS="-march=skylake -O3" -DCMAKE_CXX11_ABI=ON -DBUILD_SHARED_LIBS=ON -DUSE_CUDA=ON -DUSE_CUDA=ON -DUSE_OPENMP=ON -DGPU_COMPUTE_VER=75
+  cmake ..  -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
+    -DCMAKE_CXX11_ABI=ON \
+    -DBUILD_SHARED_LIBS=ON \
+    -DUSE_CUDA=ON \
+    -DUSE_OPENMP=OFF \
+    -DGPU_COMPUTE_VER=75
   make -j6
 }
 
