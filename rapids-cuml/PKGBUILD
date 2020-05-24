@@ -5,16 +5,17 @@
 
 pkgname=(rapids-cuml)
 _pkgname=cuml
-pkgver=0.14.0a.r2688.g4084790af
+pkgver=0.15.0a.r82.g867ac725c
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
-depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'zlib' 'blas' 'python' 'cython' 'python-cupy' 'protobuf' 'python-scikit-learn' 'python-threadpoolctl')
+depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'zlib' 'blas' 'python' 'cython' 'python-cupy' 'protobuf')
 makedepends=('protobuf-static')
 optional=('openucx')
-source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git"
+# source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git"
+source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#branch=branch-0.15"
   "setup.py.patch" )
 
 # sha256sums=('SKIP')
@@ -53,10 +54,9 @@ build() {
   export CUDA_BIN_PATH=$CUDA_HOME
    #  -DPARALLEL_LEVEL=6 \
    # -DENABLE_PROTOBUF=ON \
-   # -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
   cmake .. \
-    -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_FLAGS="-march=skylake -O3 -pthread" \
+    -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
     -DBUILD_CUML_C_LIBRARY=ON \
@@ -78,7 +78,6 @@ build() {
     -DProtobuf_LIBRARY=/usr/lib/libprotobuf.so 
     # -DWITH_UCX=OFF \
     # make -j6
-    # sed -i -e 's/-lpthread -ldl/-lprotobuf -ldl/g' ./CMakeFiles/cuml++.dir/link.txt
     sed -i -e 's/-lpthread/\/usr\/lib\/libprotobuf.a -lpthread -lprotobuf/g' ./CMakeFiles/cuml++.dir/link.txt
     make -j6 VERBOSE=1
 
@@ -92,10 +91,9 @@ build() {
     export CUB_PATH=/usr
     export LDFLAGS='-L/opt/cuda/lib64 -lprotobuf'
 
-
     cd "${srcdir}"/cuml/python
 
-    python setup.py build_ext -j6 --inplace --library-dir="${srcdir}"/cudf/cpp/build  --singlegpu --verbose
+    python setup.py build_ext -j6 --inplace --library-dir="${srcdir}"/cudf/cpp/build  --singlegpu --verbose 
 
 
 }
