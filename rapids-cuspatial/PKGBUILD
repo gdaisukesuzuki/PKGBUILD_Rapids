@@ -5,7 +5,7 @@
 
 pkgname=(rapids-cuspatial)
 _pkgname=cuspatial
-pkgver=0.14.0a.r513.g81f7d3d
+pkgver=0.15.0a.r22.g2cdcc67
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
@@ -14,7 +14,7 @@ license=('custom')
 depends=('rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'python-cupy' 'gdal' 'python-gdal')
 # makedepends=('protobuf-static')
 # optional=('openucx')
-source=("${_pkgname}::git+https://github.com/rapidsai/cuspatial.git"
+source=("${_pkgname}::git+https://github.com/rapidsai/cuspatial.git#branch=branch-0.15"
 #         "${_pkgname2}::git+https://github.com/rapidsai/cudf.git"
 
   "setup.py.patch" )
@@ -44,9 +44,9 @@ build() {
   cd "${srcdir}/cuspatial"
 #  git submodule update --init --remote --recursive
   git submodule sync --recursive && git submodule update --init --recursive
-  find cpp -name '*.cu' | xargs fgrep -l "utilities/legacy" | xargs sed -i -e 's/utilities\/legacy\/cuda_utils/cudf\/utilities\/legacy\/cuda_utils/g'
-  find cpp -name '*.cu' | xargs fgrep -l "utilities/legacy" | xargs sed -i -e 's/utilities\/legacy\/error_utils/cudf\/utilities\/legacy\/error_utils/g'
-  find cpp -name '*.cu' | xargs fgrep -l "utilities/legacy" | xargs sed -i -e 's/utilities\/legacy\/column_utils/cudf\/utilities\/legacy\/column_utils/g'
+  # find cpp -name '*.cu' | xargs fgrep -l "utilities/legacy" | xargs sed -i -e 's/utilities\/legacy\/cuda_utils/cudf\/utilities\/legacy\/cuda_utils/g'
+  # find cpp -name '*.cu' | xargs fgrep -l "utilities/legacy" | xargs sed -i -e 's/utilities\/legacy\/error_utils/cudf\/utilities\/legacy\/error_utils/g'
+  # find cpp -name '*.cu' | xargs fgrep -l "utilities/legacy" | xargs sed -i -e 's/utilities\/legacy\/column_utils/cudf\/utilities\/legacy\/column_utils/g'
 
 
   cd cpp
