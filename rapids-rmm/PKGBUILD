@@ -5,14 +5,15 @@
 
 pkgname=(rapids-rmm)
 _pkgname=rmm
-pkgver=0.14.0a.r360.g67cd054
+pkgver=0.15.0a.r28.ga14bf44
 pkgrel=1
 pkgdesc="RAPIDS Memory Manager"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
 depends=('gcc8' 'cython' 'cuda' 'cmake' 'python-numba')
-source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git")
+# source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git")
+source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git#branch=branch-0.15")
 
 sha256sums=('SKIP')
 
@@ -42,8 +43,8 @@ build() {
 
   mkdir -p build
   cd build
-#    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
   cmake .. \
+    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
