@@ -5,14 +5,15 @@
 
 pkgname=(rapids-cusignal)
 _pkgname=cusignal
-pkgver=0.14.0a.r338.ga0b3ea8
+pkgver=0.15.0a.r0.g1579d54
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
 depends=('python-cupy' 'python-numba')
-source=("${_pkgname}::git+https://github.com/rapidsai/cusignal.git")
+# source=("${_pkgname}::git+https://github.com/rapidsai/cusignal.git")
+source=("${_pkgname}::git+https://github.com/rapidsai/cusignal.git#branch=branch-0.15")
 
 sha256sums=('SKIP')
 # sha256sums=('SKIP' 'SKIP')
