@@ -6,7 +6,7 @@
 pkgname=(rapids-cugraph)
 _pkgname=cugraph
 _pkgname2=hornet
-pkgver=0.14.0a.r551.g47cb378d
+pkgver=0.15.0a.r63.g91d54e55
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
@@ -15,14 +15,16 @@ license=('custom')
 depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static')
 # depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static' 'hortnet')
 # depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'libcypher-parser-static' 'gunrock-static')
-source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git"
-  "CMakeLists.txt.pacth"
+# source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git"
+source=("${_pkgname}::git+https://github.com/rapidsai/cugraph.git#branch=branch-0.15"
+  "CMakeLists.txt.patch" # "error_utils.h.patch" "renumber.cuh.patch"
 #  "https://raw.githubusercontent.com/hornet-gt/hornet/master/hornet/include/Hornet.hpp"
   )
 #  "${_pkgname2}::git+https://github.com/hornet-gt/hornet.git#tag=0.5")
 
 # sha256sums=( 'SKIP')
 sha256sums=('SKIP' 'SKIP')
+# sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 pkgver() {
     cd cugraph
@@ -42,7 +44,9 @@ pkgver() {
 
 build() {
   cd "${srcdir}"
-  patch -p0 < CMakeLists.txt.pacth
+  patch -p0 < CMakeLists.txt.patch
+#  patch -p0 < error_utils.h.patch
+#  patch -p0 < renumber.cuh.patch
   cd "${srcdir}/cugraph"
   git submodule update --init --remote --recursive
 
@@ -62,8 +66,8 @@ build() {
   export GPU_ARCHS=75
    #  -DPARALLEL_LEVEL=6 \
    # -DENABLE_PROTOBUF=ON \
-   # -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
   cmake .. \
+    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \

@@ -1,0 +1,19 @@
+*** cugraph/cpp/src/utilities/error_utils.h-dist	2020-05-22 23:46:19.912890387 +0900
+--- cugraph/cpp/src/utilities/error_utils.h	2020-05-22 23:46:42.059475342 +0900
+***************
+*** 25,31 ****
+  
+  #include "nvgraph_error_utils.h"
+  
+! #include <cudf/types.h>
+  
+  namespace cugraph {
+  /**---------------------------------------------------------------------------*
+--- 25,31 ----
+  
+  #include "nvgraph_error_utils.h"
+  
+! #include <cudf/types.hpp>
+  
+  namespace cugraph {
+  /**---------------------------------------------------------------------------*

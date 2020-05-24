@@ -1,0 +1,19 @@
+*** cugraph/cpp/src/converters/renumber.cuh-dist	2020-05-22 23:52:27.128048300 +0900
+--- cugraph/cpp/src/converters/renumber.cuh	2020-05-22 23:52:43.864640017 +0900
+***************
+*** 23,29 ****
+  #include <cub/cub.cuh>
+  
+  #include <cuda_runtime_api.h>
+! #include <cudf/cudf.h>
+  #include <thrust/binary_search.h>
+  #include <thrust/scan.h>
+  
+--- 23,29 ----
+  #include <cub/cub.cuh>
+  
+  #include <cuda_runtime_api.h>
+! #include <cudf/cudf.hpp>
+  #include <thrust/binary_search.h>
+  #include <thrust/scan.h>
+  
