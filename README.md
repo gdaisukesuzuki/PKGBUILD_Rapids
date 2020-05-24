@@ -90,10 +90,11 @@ TBD.  [rapids-dask-cuda](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/
 ```
 ## Need for Benchmark
 
-1. [UMAP-Learn](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/umap/PKGBUILD)
+1. [UMAP-Learn](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/python-umap-learn/PKGBUILD)
 
 ```
 * Uniform Manifold Approximation and Projection for Dimension Reduction
+* Only running on  Intelx86 (for example it cannot run on Jetson Xavier nx)
 ```
 
 2. [XGBoost](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/xgboost/PKGBUILD)
