@@ -8,21 +8,19 @@
 # Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
 
 pkgbase='protobuf'
-pkgname=('protobuf-static')
-pkgver=3.11.4
+pkgname=('protobuf-static' 'python-protobuf')
+pkgver=3.12.2
 pkgrel=1
 pkgdesc="Protocol Buffers - Google's data interchange format"
 arch=('x86_64')
 url='https://developers.google.com/protocol-buffers/'
 license=('BSD')
 depends=('gcc-libs' 'glibc' 'zlib')
-makedepends=('unzip') 
+makedepends=('unzip' 'python-setuptools') 
 options=('staticlibs')
 source=("https://github.com/protocolbuffers/$pkgbase/releases/download/v$pkgver/$pkgbase-all-$pkgver.tar.gz"
 	 "no-thirdparty.patch")
-provides=("protobuf=$pkgver")
-conflicts=('protobuf')
-sha512sums=('d0fa36bb4c412dbe41f11c371aba84eb7fd8b751ee1528c75f55b0c141178d7854c2018d4d4433f1484ac1a4a63ff2be5630826aea4c3b8813dab628229da832' 'SKIP')
+sha512sums=('SKIP' 'SKIP')
 
 prepare() {
   cd "$pkgbase-$pkgver"
@@ -35,6 +33,8 @@ build() {
   cd "$pkgbase-$pkgver"
   ./configure --prefix=/usr
   make  CFLAGS="$CFLAGS -fPIC" CXXFLAGS="$CXXFLAGS -fPIC"
+  cd python
+  python setup.py build --cpp_implementation
 }
 
 # check() {
@@ -43,7 +43,9 @@ build() {
 # }
 
 package_protobuf-static() {
+  provides=("protobuf=$pkgver")
   replaces=('protobuf-cpp')
+  conflicts=('protobuf')
 
   cd "$pkgbase-$pkgver"
   make DESTDIR="$pkgdir" install
@@ -55,3 +57,19 @@ package_protobuf-static() {
     -t "${pkgdir}/usr/share/vim/vimfiles/syntax"
 }
 
+package_python-protobuf() {
+  pkgdesc='Python 3 bindings for Google Protocol Buffers'
+  depends=('python' 'python-six' "protobuf=$pkgver")
+
+  local python_version=$(python -c 'import sys; print(".".join(map(str, sys.version_info[:2])))')
+  cd "$pkgbase-$pkgver"
+  (
+    cd python
+    PYTHONPATH="$PWD/build/lib.linux-$CARCH-${python_version}:PYTHONPATH" \
+    python setup.py install --skip-build \
+                            --cpp_implementation \
+                            --optimize=1 \
+                            --root="$pkgdir"
+  )
+  install -vDm 644 LICENSE -t "${pkgdir}/usr/share/licenses/${pkgname}"
+}
