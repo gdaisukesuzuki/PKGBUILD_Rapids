@@ -5,12 +5,13 @@ _pkgname='arrow'
 provides=('arrow')
 conflict='arrow'
 pkgver=0.15.1
-pkgrel=1
+pkgrel=2
 pkgdesc="A columnar in-memory analytics layer for big data."
 arch=('x86_64')
 url="https://arrow.apache.org"
 license=('Apache')
-depends=('python-tensorflow' 'gcc' 'cuda' 'boost-libs' 'brotli' 'double-conversion' 'c-ares-cmake' 'gflags' 'grpc-rapids<1.28.0' 'grpc-rapids>=1.27.0' 'google-glog' 'lz4' 'protobuf' 'rapidjson' 'snappy' 'thrift' 'uriparser' 'zstd')
+depends=('python-tensorflow' 'gcc' 'cuda' 'boost-libs' 'brotli' 'double-conversion' 'c-ares-cmake' 'gflags' 'grpc' 'google-glog' 'lz4' 'protobuf' 'rapidjson' 'snappy' 'thrift' 'uriparser' 'zstd' 'apache-orc')
+# depends=('python-tensorflow' 'gcc' 'cuda' 'boost-libs' 'brotli' 'double-conversion' 'c-ares-cmake' 'gflags' 'grpc-rapids<1.28.0' 'grpc-rapids>=1.27.0' 'google-glog' 'lz4' 'protobuf' 'rapidjson' 'snappy' 'thrift' 'uriparser' 'zstd')
 checkdepends=('git')
 optdepends=()
 makedepends=('apache-orc' 'boost' 'cmake' 'flatbuffers' 'python-numpy' 'cuda')
@@ -52,7 +53,9 @@ build(){
                                       -DARROW_WITH_BROTLI=ON \
                                       -DGTest_SOURCE=BUNDLED \
                                       -DgRPC_ROOT="/usr"
-  make -j6
+  sed -i -e 's/GRPC_CPP_PLUGIN-NOTFOUND/\/usr\/bin\/grpc_cpp_plugin/g' ./src/arrow/flight/CMakeFiles/flight_grpc_gen.dir/build.make
+
+  make -j6 VERBOSE=1
   # CC=/usr/bin/gcc-8 CXX=/usr/bin/g++-8 make
   #                                     -DARROW_CUDA=ON \
 }
