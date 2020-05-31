@@ -3,34 +3,35 @@
 
 pkgname=python-cupy
 _pkgname=cupy
-pkgver=7.4.0
+pkgver=8.0.0b3.r10.ge3ab9f5b5
 _pkgver=7.4.0
-#pkgver=8.0.0b2
-#_pkgver=8.0.0b2
-pkgrel=0
+pkgrel=1
 pkgdesc='NumPy-like API accelerated with CUDA'
 arch=('any')
 url='https://github.com/cupy/cupy'
 license=('custom')
-depends=('python-numpy' 'python-six' 'cuda' 'cudnn' 'python-fastrlock' 'libcutensor' 'cub')
+depends=('gcc8' 'python-numpy' 'python-six' 'cuda' 'cudnn' 'python-fastrlock' 'libcutensor' 'cub')
 makedepends=('git' 'python-setuptools')
 conflicts=('python-cupy')
 provides=('python-cupy')
-source=("$pkgname-$pkgver.tar.gz::https://github.com/cupy/cupy/archive/v$pkgver.tar.gz")
+source=('git://github.com/cupy/cupy.git')
+# source=('git://github.com/cupy/cupy.git#tag=v8.0.0b2')
+# source=("$pkgname-$pkgver.tar.gz::https://github.com/cupy/cupy/archive/v$pkgver.tar.gz")
 md5sums=('SKIP' )
 
-#pkgver() {
-#  cd $_pkgname
-#  git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
-#}
+pkgver() {
+  cd $_pkgname
+  git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g' |  sed 's/v//g'  
+}
 
 
 build() {
 #  patch -d cupy -Np1 -i "${srcdir}/../setup_build.py.patch"
-  cd $_pkgname-$pkgver
+#  cd $_pkgname-$pkgver
+ cd $_pkgname
   export CUDA_PATH=/opt/cuda
-  export CC=gcc
-  export CXX=g++
+  export CC=/usr/bin/gcc-8
+  export CXX=/usr/bin/g++-8
   #export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector'
   export CUPY_NVCC_GENERATE_CODE="arch=compute_75,code=sm_75"
   export LD_LIBRARY_PATH=/usr/lib:/opt/cuda/lib64:/opt/cuda/extras/CUPTI/lib64:/opt/magma/lib
@@ -38,17 +39,18 @@ build() {
   export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
   export NVCC='/opt/cuda/bin/nvcc'
   export CUB_PATH=/usr
-  LANG=C  python setup.py build  --verbose 
+  PARALLEL_LEVEL=6 LANG=C CFLAGS="-O3 -fPIC -march=skylake -mtune=native -fstack-protector -pipe" python setup.py build  --verbose 
 nn_path=/usr
 
 }
 
 package() {
-  cd $_pkgname-$pkgver
+  cd $_pkgname
+  # cd $_pkgname-$pkgver
 
   export CUDA_PATH=/opt/cuda
-  export CC=gcc
-  export CXX=g++
+  export CC=/usr/bin/gcc-8
+  export CXX=/usr/bin/g++-8
   python setup.py install --root=${pkgdir} --optimize=1
 
   install -D -m644 LICENSE ${pkgdir}/usr/share/licenses/python-$_pkgname
