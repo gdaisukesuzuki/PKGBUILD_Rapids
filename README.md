@@ -4,55 +4,51 @@ a  procedure of building NVIDIA's [RAPIDS](https://rapids.ai/) under Arch Linux 
 
 ## Order in build
 
-1. [grpc](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/grpc/PKGBUILD)
 
-```
-* Build gRPC 1.27.3 compulsory
-* Apache Arrow cannot be build with grpc Ver 1.28 or higher 
-```
-
-2.  [protobuf-static](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/protobuf-static/PKGBUILD)
+1.  [protobuf-static](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/protobuf-static/PKGBUILD)
 ```
 * Static library of protobuf is required to build cuDF.
-* AUR provides the same package. However,  AUR only contains older ver (3.11.1)., (current ver. is 3.11.4)
+* AUR provides the same package. However,  AUR only contains older ver (3.11.1)., (current ver. is 3.12.2)
 ```
 
-3.  [arrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/arrow/PKGBUILD)
+2.  [arrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/arrow/PKGBUILD)
 ```
 * Build Apache Arrow 0.15.1 compulsory
 * With Apache Arrow 0.16 or higher, cuDF cannot be build. see [ISSUE](https://github.com/rapidsai/cudf/issues/4605)
+* Apache Orc is required located in AUR.
+* During compilation in Apache Flight, there is a patch so that gRPC-c++-plugin cab be easily integrated in Higher Version.
 ```
 
-4.  [python-pyarrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-arrow/PKGBUILD)
+3.  [python-pyarrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-arrow/PKGBUILD)
 ```
 * Build  Python Library of Apache Arrow 0.15.1 compulsory
 ```
 
 
-5.  [python-cmake-setuptools](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-cmake-setuptools/PKGBUILD)
+4.  [python-cmake-setuptools](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-cmake-setuptools/PKGBUILD)
 ```
 * Build  Python Library for enabling to run cmake during "python setup.py build"
 ```
-6.  [cupy](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/cupy/PKGBUILD)
+5.  [cupy](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/cupy/PKGBUILD)
 ```
 * An implementation of NumPy-compatible  array on CUDA presented by Preferred Networks.
 * AUR provides the same package. However,  AUR only contains older ver (7.2.0). which does not support CUDA 10.2 , (current ver. is 7.4.0) 
 *  See [github](https://github.com/cupy/cupy)
 ```
 
-7.  [rmm](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-rmm/PKGBUILD)
+6.  [rmm](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-rmm/PKGBUILD)
 ```
 * RAPIDS Memory Manager provided by  Rapids.
 * See [github](https://github.com/rapidsai/rmm)
 ```
 
-8.  [cuDF](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cudf/PKGBUILD)
+7.  [cuDF](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cudf/PKGBUILD)
 ```
 *  a GPU DataFrame taking place of pandas
 * See [github](https://github.com/rapidsai/cudf)
 ```
 
-9.  [cuML](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cuml/PKGBUILD)
+8.  [cuML](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cuml/PKGBUILD)
 ```
 *  A suite of libraries that implement machine learning algorithms presented by Rapids.
 * See [github](https://github.com/rapidsai/cuml)
