@@ -11,7 +11,7 @@ a  procedure of building NVIDIA's [RAPIDS](https://rapids.ai/) under Arch Linux 
 * AUR provides the same package. However,  AUR only contains older ver (3.11.1)., (current ver. is 3.12.2)
 ```
 
-2.  [arrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/arrow/PKGBUILD)/[python-pyarrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-arrow/PKGBUILD)
+2.  [arrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/arrow/PKGBUILD) / [python-pyarrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-arrow/PKGBUILD)
 ```
 * Build Apache Arrow 0.15.1 and and its associated Python-Wrapper compulsory
 * With Apache Arrow 0.16 or higher, cuDF cannot be build. see [ISSUE](https://github.com/rapidsai/cudf/issues/4605)
@@ -30,7 +30,7 @@ a  procedure of building NVIDIA's [RAPIDS](https://rapids.ai/) under Arch Linux 
 *  See [github](https://github.com/cupy/cupy)
 ```
 
-5.  [python-llvm](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/python-llvmlite/PKGBUILD)/[python-numba](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/python-numba/PKGBUILD)
+5.  [python-llvm](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/python-llvmlite/PKGBUILD) / [python-numba](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/python-numba/PKGBUILD)
 ```
 * An open source JIT compiler that translates a subset of Python and NumPy code into fast machine code.
 * These PKGBUILDs provide llvmlite 0.33.0rc1 and Numba 0.50.0rc1.
