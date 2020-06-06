@@ -23,14 +23,14 @@ a  procedure of building NVIDIA's [RAPIDS](https://rapids.ai/) under Arch Linux 
 ```
 * Build  Python Library for enabling to run cmake during "python setup.py build"
 ```
-4.  [cupy](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/cupy/PKGBUILD)
+4.  [Cupy](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/cupy/PKGBUILD)
 ```
 * An implementation of NumPy-compatible  array on CUDA presented by Preferred Networks.
 * AUR provides the same package. However,  AUR only contains older ver (7.2.0). which does not support CUDA 10.2 , (current ver. is 7.4.0) 
 *  See [github](https://github.com/cupy/cupy)
 ```
 
-5.  [python-llvm](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/python-llvmlite/PKGBUILD) / [python-numba](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/python-numba/PKGBUILD)
+5.  [python-LLVMlite](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/python-llvmlite/PKGBUILD) / [python-Numba](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/python-numba/PKGBUILD)
 ```
 * An open source JIT compiler that translates a subset of Python and NumPy code into fast machine code.
 * These PKGBUILDs provide llvmlite 0.33.0rc1 and Numba 0.50.0rc1, respectively.
