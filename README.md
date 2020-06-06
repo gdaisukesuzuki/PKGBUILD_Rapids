@@ -4,12 +4,19 @@ a  procedure of building NVIDIA's [RAPIDS](https://rapids.ai/) under Arch Linux 
 
 ## Prerequisites
 * Hardware
+
 ** Intel or AMD's CPU
+
 ** NVIDIA's Single GPU which has architecture whose type is Pascal / Volta / Turing. (eg GeForce / TITAN / Tesla / Quadro)
+
 * Software
+
 ** Arch Linux or its derivatives.
+
 ** AUR / yay required
+
 * Disclaimer
+
 Operation is not necessarily guaranteed. The author are not responsible for any damage of your environment by any of the operations described here.
 
 
