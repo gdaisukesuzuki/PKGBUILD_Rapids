@@ -12,7 +12,7 @@ pkgdesc="decision tree"
 arch=('x86_64')
 url=""
 license=('custom')
-depends=('cmake' 'fmt' 'xgboost' 'gcc8')
+depends=('cmake' 'fmt' 'xgboost' )
 makedepends=('python-setuptools')
 # source=("${_pkgname}::git+https://github.com/dmlc/treelite.git")
 source=("${_pkgname}::git+https://github.com/dmlc/treelite.git#tag=${_pkgver}")
