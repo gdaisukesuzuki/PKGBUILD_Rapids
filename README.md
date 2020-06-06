@@ -71,7 +71,7 @@ Optional [rapids-cuGraph](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree
 * libcypher-parser is required before building cuGraph
 ```
 
-Optional [rapids-cuSpatial](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-spatial/PKGBUILD)
+Optional [rapids-cuSpatial](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/rapids-cuspatial/PKGBUILD)
 ```
 * a library for handling spatial and trajectory data.
 * See [github](https://github.com/rapidsai/cuspatial)
