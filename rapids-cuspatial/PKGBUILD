@@ -5,7 +5,7 @@
 
 pkgname=(rapids-cuspatial)
 _pkgname=cuspatial
-pkgver=0.15.0a.r22.g2cdcc67
+pkgver=0.15.0a.r103.gc1dd8c7
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
