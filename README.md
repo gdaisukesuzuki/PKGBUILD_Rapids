@@ -11,30 +11,32 @@ a  procedure of building NVIDIA's [RAPIDS](https://rapids.ai/) under Arch Linux 
 * AUR provides the same package. However,  AUR only contains older ver (3.11.1)., (current ver. is 3.12.2)
 ```
 
-2.  [arrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/arrow/PKGBUILD)
+2.  [arrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/arrow/PKGBUILD)/[python-pyarrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-arrow/PKGBUILD)
 ```
-* Build Apache Arrow 0.15.1 compulsory
+* Build Apache Arrow 0.15.1 and and its associated Python-Wrapper compulsory
 * With Apache Arrow 0.16 or higher, cuDF cannot be build. see [ISSUE](https://github.com/rapidsai/cudf/issues/4605)
 * Apache Orc is required located in AUR.
 * During compilation in Apache Flight, there is a patch so that gRPC-c++-plugin cab be easily integrated in Higher Version.
 ```
 
-3.  [python-pyarrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-arrow/PKGBUILD)
-```
-* Build  Python Library of Apache Arrow 0.15.1 compulsory
-```
-
-
-4.  [python-cmake-setuptools](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-cmake-setuptools/PKGBUILD)
+3.  [python-cmake-setuptools](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-cmake-setuptools/PKGBUILD)
 ```
 * Build  Python Library for enabling to run cmake during "python setup.py build"
 ```
-5.  [cupy](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/cupy/PKGBUILD)
+4.  [cupy](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/cupy/PKGBUILD)
 ```
 * An implementation of NumPy-compatible  array on CUDA presented by Preferred Networks.
 * AUR provides the same package. However,  AUR only contains older ver (7.2.0). which does not support CUDA 10.2 , (current ver. is 7.4.0) 
 *  See [github](https://github.com/cupy/cupy)
 ```
+
+5.  [python-llvm](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/python-llvmlite/PKGBUILD)/[python-numba](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/python-numba/PKGBUILD)
+```
+* An open source JIT compiler that translates a subset of Python and NumPy code into fast machine code.
+* These PKGBUILDs provide llvmlite 0.33.0rc1 and Numba 0.50.0rc1.
+*  See githubs. [llvmlite](https://github.com/numba/llvmlite) and [numba](https://github.com/numba/numba)
+```
+
 
 6.  [rmm](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-rmm/PKGBUILD)
 ```
@@ -59,9 +61,6 @@ Optional.  [cuSignal](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/mas
 * GPU accelerated signal processing which may replace scipy signal?
 * See [github](https://github.com/rapidsai/cusignal)
 ```
-
-
-
 
 
 Optional [rapids-cuGraph](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cugraph/PKGBUILD)
@@ -91,6 +90,7 @@ TBD.  [rapids-dask-cuda](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/
 ```
 * Uniform Manifold Approximation and Projection for Dimension Reduction
 * Only running on  Intelx86 (for example it cannot run on Jetson Xavier nx)
+* its building depends on Python-Numba (See No.5).
 ```
 
 2. [XGBoost](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/xgboost/PKGBUILD)
