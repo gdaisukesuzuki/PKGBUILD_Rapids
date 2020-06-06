@@ -1,0 +1,27 @@
+# Maintainer: Michael Schubert <mschu.dev at gmail>
+pkgname=python-numba
+pkgver=0.50.0rc1
+pkgrel=0
+pkgdesc="NumPy aware dynamic Python compiler using LLVM"
+url="http://numba.pydata.org/"
+arch=('i686' 'x86_64')
+license=('BSD')
+depends=('python-llvmlite>0.31.0' 'python-numpy>=1.10')
+makedepends=('cython')
+source=("https://github.com/numba/numba/archive/$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+  cd "$srcdir/numba-$pkgver"
+  python setup.py build
+}
+
+check_disabled() { #ERROR: unittest/loader.py returned decorator, not test
+  cd "$srcdir/numba-$pkgver"
+  python setup.py test
+}
+
+package() {
+  cd "$srcdir/numba-$pkgver"
+  python setup.py install --skip-build --prefix=/usr --root="$pkgdir" --optimize=1
+}
