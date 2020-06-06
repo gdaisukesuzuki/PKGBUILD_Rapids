@@ -1,0 +1,12 @@
+*** rmm/python/setup.py-dist	2020-06-05 09:52:11.314164874 +0900
+--- rmm/python/setup.py	2020-06-05 09:53:55.912933561 +0900
+***************
+*** 38,43 ****
+--- 38,44 ----
+              "../include/rmm",
+              "../include",
+              "../build/include",
++             "../build/_deps/spdlog-src/include",
+              os.path.dirname(sysconfig.get_path("include")),
+              cuda_include_dir,
+          ],
