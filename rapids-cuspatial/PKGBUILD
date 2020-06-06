@@ -14,13 +14,13 @@ license=('custom')
 depends=('rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'python' 'cython' 'python-cupy' 'gdal' 'python-gdal')
 # makedepends=('protobuf-static')
 # optional=('openucx')
-source=("${_pkgname}::git+https://github.com/rapidsai/cuspatial.git#branch=branch-0.15"
+source=("${_pkgname}::git+https://github.com/rapidsai/cuspatial.git#branch=branch-0.15")
 #         "${_pkgname2}::git+https://github.com/rapidsai/cudf.git"
 
-  "setup.py.patch" )
+#  "setup.py.patch" )
 
-# sha256sums=('SKIP')
-sha256sums=('SKIP' 'SKIP')
+sha256sums=('SKIP')
+# sha256sums=('SKIP' 'SKIP')
 # sha256sums=('SKIP' 'SKIP' 'SKIP')
 
 pkgver() {
