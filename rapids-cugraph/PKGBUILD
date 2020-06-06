@@ -6,7 +6,7 @@
 pkgname=(rapids-cugraph)
 _pkgname=cugraph
 _pkgname2=hornet
-pkgver=0.15.0a.r63.g91d54e55
+pkgver=0.15.0a.r142.g817cab54
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
