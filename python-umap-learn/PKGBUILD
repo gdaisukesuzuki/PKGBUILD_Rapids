@@ -1,7 +1,7 @@
 _name=umap-learn
 pkgname=python-$_name
-pkgver=0.4.3
-pkgrel=0
+pkgver=0.4.4
+pkgrel=1
 pkgdesc='Uniform Manifold Approximation and Projection'
 arch=(any)
 url="https://github.com/lmcinnes/umap"
@@ -13,5 +13,7 @@ sha256sums=('SKIP')
 
 package() {
 	cd "$_name-$pkgver"
+#	sed -i -e 's/numba.targets/numba.core/g' ./umap/spectral.py
+
 	python setup.py install --root="$pkgdir" --optimize=1 || return 1
 }
