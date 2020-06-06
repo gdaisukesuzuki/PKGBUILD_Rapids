@@ -5,7 +5,7 @@
 
 pkgname=(rapids-cusignal)
 _pkgname=cusignal
-pkgver=0.15.0a.r0.g1579d54
+pkgver=0.15.0a.r29.gfe81d5e
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
