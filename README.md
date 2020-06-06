@@ -33,7 +33,7 @@ a  procedure of building NVIDIA's [RAPIDS](https://rapids.ai/) under Arch Linux 
 5.  [python-llvm](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/python-llvmlite/PKGBUILD) / [python-numba](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/python-numba/PKGBUILD)
 ```
 * An open source JIT compiler that translates a subset of Python and NumPy code into fast machine code.
-* These PKGBUILDs provide llvmlite 0.33.0rc1 and Numba 0.50.0rc1.
+* These PKGBUILDs provide llvmlite 0.33.0rc1 and Numba 0.50.0rc1, respectively.
 *  See githubs. [llvmlite](https://github.com/numba/llvmlite) and [numba](https://github.com/numba/numba)
 ```
 
