@@ -107,8 +107,8 @@ TBD.  [rapids-dask-cuda](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/
 
 ```
 * Uniform Manifold Approximation and Projection for Dimension Reduction
-* Only running on  Intelx86 (for example it cannot run on Jetson Xavier nx)
-* its building depends on Python-Numba (See No.5).
+* Only running on  Intelx86-64 (i.e. it cannot run on Jetson Xavier nx)
+* its building depends on Python-Numba (See No.5 above).
 ```
 
 2. [XGBoost](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/xgboost/PKGBUILD)
