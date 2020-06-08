@@ -3,7 +3,7 @@
 
 pkgname=python-cupy
 _pkgname=cupy
-pkgver=8.0.0b3.r10.ge3ab9f5b5
+pkgver=8.0.0b3.r96.g2025b1675
 _pkgver=7.4.0
 pkgrel=1
 pkgdesc='NumPy-like API accelerated with CUDA'
@@ -30,8 +30,8 @@ build() {
 #  cd $_pkgname-$pkgver
  cd $_pkgname
   export CUDA_PATH=/opt/cuda
-  export CC=/usr/bin/gcc-8
-  export CXX=/usr/bin/g++-8
+  # export CC=/usr/bin/gcc-8
+  # export CXX=/usr/bin/g++-8
   #export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector'
   export CUPY_NVCC_GENERATE_CODE="arch=compute_75,code=sm_75"
   export LD_LIBRARY_PATH=/usr/lib:/opt/cuda/lib64:/opt/cuda/extras/CUPTI/lib64:/opt/magma/lib
@@ -40,6 +40,7 @@ build() {
   export NVCC='/opt/cuda/bin/nvcc'
   export CUB_PATH=/usr
   PARALLEL_LEVEL=6 LANG=C CFLAGS="-O3 -fPIC -march=skylake -mtune=native -fstack-protector -pipe" python setup.py build  --verbose 
+  # LANG=C CFLAGS="-O3 -fPIC -march=skylake -mtune=native -fstack-protector -pipe" python setup.py build  --verbose 
 nn_path=/usr
 
 }
