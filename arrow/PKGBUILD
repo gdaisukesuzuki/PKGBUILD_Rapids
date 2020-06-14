@@ -1,35 +1,29 @@
 # Maintainer: Guillaume Horel <guillaume.horel@gmail.com>
 
-pkgname='arrow-cudf'
-_pkgname='arrow'
-provides=('arrow')
-conflict='arrow'
-pkgver=0.15.1
-pkgrel=2
+pkgname='arrow-cuda'
+pkgbase='arrow'
+pkgver=0.17.1
+pkgrel=0
 pkgdesc="A columnar in-memory analytics layer for big data."
 arch=('x86_64')
 url="https://arrow.apache.org"
 license=('Apache')
-depends=('python-tensorflow' 'gcc' 'cuda' 'boost-libs' 'brotli' 'double-conversion' 'c-ares-cmake' 'gflags' 'grpc' 'google-glog' 'lz4' 'protobuf' 'rapidjson' 'snappy' 'thrift' 'uriparser' 'zstd' )
-# depends=('python-tensorflow' 'gcc' 'cuda' 'boost-libs' 'brotli' 'double-conversion' 'c-ares-cmake' 'gflags' 'grpc' 'google-glog' 'lz4' 'protobuf' 'rapidjson' 'snappy' 'thrift' 'uriparser' 'zstd' 'apache-orc')
-# depends=('python-tensorflow' 'gcc' 'cuda' 'boost-libs' 'brotli' 'double-conversion' 'c-ares-cmake' 'gflags' 'grpc-rapids<1.28.0' 'grpc-rapids>=1.27.0' 'google-glog' 'lz4' 'protobuf' 'rapidjson' 'snappy' 'thrift' 'uriparser' 'zstd')
+depends=('boost-libs' 'brotli' 'double-conversion' 'c-ares-cmake' 'gflags' 'grpc>=1.27.0' 'google-glog' 'lz4' 'protobuf' 'rapidjson' 'snappy' 'thrift' 'uriparser' 'zstd' 'cuda')
 checkdepends=('git')
 optdepends=()
-makedepends=('apache-orc' 'boost' 'cmake' 'flatbuffers' 'python-numpy' 'cuda')
+provides=('parquet-cpp' 'arrow=0.17.1')
+conflicts=('parquet-cpp' 'arrow')
+makedepends=('apache-orc' 'boost' 'cmake' 'flatbuffers' 'python-numpy')
 source=("https://github.com/apache/arrow/archive/apache-arrow-$pkgver.tar.gz")
-sha256sums=('ab1c0d371a10b615eccfcead71bb79832245d788f4834cc6b278c03c3872d593')
+sha256sums=('SKIP')
 
 build(){
   cd "$srcdir"
   mkdir -p build
   cd "$srcdir/build"
-  # CUDA_HOME=/opt/cuda ARROW_BUILD_TOOLCHAIN=/usr ORC_HOME=/usr DOUBLE_CONVERSION_HOME=/usr cmake \
-  # ARROW_BUILD_TOOLCHAIN=/usr ORC_HOME=/usr DOUBLE_CONVERSION_HOME=/usr cmake \
-  #  ../$pkgname-apache-$pkgname-$pkgver/cpp -DARROW_DEPENDENCY_SOURCE=SYSTEM \
-  # CC=/usr/bin/gcc-8 CXX=/usr/bin/g++-8 \
-  CUDA_HOME=/opt/cuda ARROW_BUILD_TOOLCHAIN=/usr ORC_HOME=/usr DOUBLE_CONVERSION_HOME=/usr \
-    cmake \
-   ../$_pkgname-apache-arrow-$pkgver/cpp -DARROW_DEPENDENCY_SOURCE=SYSTEM \
+  CUDA_HOME=/opt/cuda \
+  ARROW_BUILD_TOOLCHAIN=/usr ORC_HOME=/usr DOUBLE_CONVERSION_HOME=/usr cmake \
+    ../$pkgbase-apache-$pkgbase-$pkgver/cpp -DARROW_DEPENDENCY_SOURCE=SYSTEM \
                                       -DARROW_PYTHON=ON \
                                       -DCMAKE_BUILD_TYPE=Release \
                                       -DARROW_BUILD_TESTS=ON \
@@ -42,9 +36,9 @@ build(){
                                       -DARROW_ORC=ON \
                                       -DARROW_PARQUET=ON \
                                       -DARROW_PLASMA=ON \
-                                      -DARROW_CUDA=ON \
                                       -DARROW_TENSORFLOW=ON \
                                       -DARROW_USE_SIMD=ON \
+                                      -DARROW_SIMD_LEVEL=AVX2 \
                                       -DARROW_FLIGHT=ON \
                                       -DARROW_GANDIVA=OFF \
                                       -DARROW_PROTOBUF_USE_SHARED=ON \
@@ -52,13 +46,11 @@ build(){
                                       -DARROW_USE_GLOG=ON \
                                       -DARROW_WITH_ZSTD=ON \
                                       -DARROW_WITH_BROTLI=ON \
+                                      -DARROW_CUDA=ON \
                                       -DGTest_SOURCE=BUNDLED \
                                       -DgRPC_ROOT="/usr"
   sed -i -e 's/GRPC_CPP_PLUGIN-NOTFOUND/\/usr\/bin\/grpc_cpp_plugin/g' ./src/arrow/flight/CMakeFiles/flight_grpc_gen.dir/build.make
-
-  make -j6 VERBOSE=1
-  # CC=/usr/bin/gcc-8 CXX=/usr/bin/g++-8 make
-  #                                     -DARROW_CUDA=ON \
+  make  -j 6 VERBOSE=1
 }
 
 package(){
@@ -67,4 +59,13 @@ package(){
   find "${pkgdir}/usr/lib/" -name "*testing*" -delete
 }
 
+check(){
+   cd "$srcdir"
+   rm -rf parquet-testing
+   git clone https://github.com/apache/parquet-testing.git
+   rm -rf arrow-testing
+   git clone https://github.com/apache/arrow-testing.git
+   cd build
+   PARQUET_TEST_DATA="$srcdir/parquet-testing/data" ARROW_TEST_DATA="$srcdir/arrow-testing/data" make test
+}
 # vim:ts=2:sw=2:et:
