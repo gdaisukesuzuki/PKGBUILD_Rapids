@@ -23,16 +23,14 @@ Operation is not necessarily guaranteed. The author are not responsible for any 
 ## Order in build
 
 
-1.  [protobuf-static](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/protobuf-static/PKGBUILD)
+1.  [protobuf](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/protobuf/PKGBUILD)
 ```
-* Static library of protobuf is required to build cuDF.
 * AUR provides the same package. However,  AUR only contains older ver (3.11.1)., (current ver. is 3.12.2)
 ```
 
-2.  [arrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/arrow/PKGBUILD) / [python-pyarrow](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-arrow/PKGBUILD)
+2.  [arrow-cuda](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/arrow/PKGBUILD) / [python-pyarrow-cuda](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/python-pyarrow/PKGBUILD)
 ```
-* Build Apache Arrow 0.15.1 and and its associated Python-Wrapper compulsory
-* With Apache Arrow 0.16 or higher, cuDF cannot be build. see [ISSUE](https://github.com/rapidsai/cudf/issues/4605)
+* Build with "CUDA" (differencet from AUR).
 * Apache Orc is required located in AUR.
 * During compilation in Apache Flight, there is a patch so that gRPC-c++-plugin cab be easily integrated in Higher Version.
 ```
@@ -80,21 +78,16 @@ Optional.  [cuSignal](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/mas
 * See [github](https://github.com/rapidsai/cusignal)
 ```
 
-
-Optional [rapids-cuGraph](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-cugraph/PKGBUILD)
-, [libcypher-parser](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/libcypher-parser/PKGBUILD)
-```
-* a collection of GPU accelerated graph algorithms
-* See [github](https://github.com/rapidsai/cugraph)
-* libcypher-parser is required before building cuGraph
-```
-
 Optional [rapids-cuSpatial](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/blob/master/rapids-cuspatial/PKGBUILD)
 ```
 * a library for handling spatial and trajectory data.
 * See [github](https://github.com/rapidsai/cuspatial)
 ```
 
+TBD. (rapids-cuGraph]
+```
+Sorry, it cannot be built well.
+```
 
 TBD.  [rapids-dask-cuda](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-dask-cuda/PKGBUILD)
 ```
