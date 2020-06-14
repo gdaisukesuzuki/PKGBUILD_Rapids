@@ -5,21 +5,23 @@
 
 pkgname=(rapids-cudf)
 _pkgname=cudf
-pkgver=0.15.0a.r877.g9aa0b984af
+pkgver=0.15.0a.r1298.g636a8a0e4
 pkgrel=1
 pkgdesc="RAPIDS Memory Manager"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
-depends=('arrow-cudf<0.16.0' 'gcc8' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs' 'python-dask'  'python-distributed' 'protobuf')
-makedepends=('python-cmake_setuptools' 'protobuf-static')
+depends=('arrow-cuda' 'python-pyarrow-cuda' 'gcc8' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs' 'python-dask'  'python-distributed' 'protobuf' 'python-versioneer')
+# depends=('arrow-cudf<0.16.0' 'gcc8' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs' 'python-dask'  'python-distributed' 'protobuf')
+makedepends=('python-cmake_setuptools')
+# makedepends=('python-cmake_setuptools' 'protobuf-static')
 # depends=('arrow-cudf<0.16.0' 'gcc8' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs')
 # source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git"
 source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git#branch=branch-0.15"
   "cudf_setup.py.patch")
 #  "cudf_setup.py.patch" "nvst_CMakeLists.txt.patch")
 
-sha256sums=('SKIP' 'SKIP' )
+sha256sums=('SKIP' 'SKIP')
 
 pkgver() {
     cd cudf
@@ -38,7 +40,7 @@ pkgver() {
 prepare() {
   cd "${srcdir}"
 #   patch -p0 < nvst_CMakeLists.txt.patch
-  patch -p0 < cudf_setup.py.patch
+   patch -p0 < cudf_setup.py.patch
 }
 
 build() {
@@ -53,7 +55,6 @@ build() {
   export CXX=/usr/bin/g++-8
   export CUDAHOSTCXX=/usr/bin/g++-8
 
-  #  -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
   cmake .. \
     -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
     -DCMAKE_BUILD_TYPE=Release \
@@ -99,12 +100,12 @@ package_rapids-cudf() {
 
   make DESTDIR="${pkgdir}" install_cudf
 
-  rm ${pkgdir}/usr/include/arrow/gpu/cuda_api.h
-  rm ${pkgdir}/usr/include/arrow/gpu/cuda_arrow_ipc.h
-  rm ${pkgdir}/usr/include/arrow/gpu/cuda_common.h
-  rm ${pkgdir}/usr/include/arrow/gpu/cuda_context.h
-  rm ${pkgdir}/usr/include/arrow/gpu/cuda_memory.h
-  rm ${pkgdir}/usr/include/arrow/gpu/cuda_version.h
+#  rm ${pkgdir}/usr/include/arrow/gpu/cuda_api.h
+#  rm ${pkgdir}/usr/include/arrow/gpu/cuda_arrow_ipc.h
+#  rm ${pkgdir}/usr/include/arrow/gpu/cuda_common.h
+#  rm ${pkgdir}/usr/include/arrow/gpu/cuda_context.h
+#  rm ${pkgdir}/usr/include/arrow/gpu/cuda_memory.h
+#  rm ${pkgdir}/usr/include/arrow/gpu/cuda_version.h
 
 #  cd "${srcdir}"/cudf/python/nvstrings
 #  python setup.py install --single-version-externally-managed --prefix=/usr --root="${pkgdir}" --optimize=1
