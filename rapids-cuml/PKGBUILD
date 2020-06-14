@@ -5,22 +5,22 @@
 
 pkgname=(rapids-cuml)
 _pkgname=cuml
-pkgver=0.15.0a.r386.ga58244da5
+pkgver=0.15.0a.r448.g591b5fb8d
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
 depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'zlib' 'blas' 'python' 'cython' 'python-cupy' 'protobuf')
-makedepends=('protobuf-static')
+# makedepends=('protobuf-static')
 optional=('openucx')
 # source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git"
 source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#branch=branch-0.15"
-  "setup.py.patch" )
+  "setup.py.patch" "treelite_protobuf.patch.patch")
 
 # sha256sums=('SKIP')
-sha256sums=('SKIP' 'SKIP')
-# sha256sums=('SKIP' 'SKIP' 'SKIP')
+# sha256sums=('SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP')
 
 pkgver() {
     cd cuml
@@ -40,6 +40,7 @@ pkgver() {
 build() {
   cd "${srcdir}"
   patch -p0 < setup.py.patch
+  patch -p0 < treelite_protobuf.patch.patch 
   cd "${srcdir}/cuml"
   git submodule update --init --remote --recursive
 
@@ -78,9 +79,10 @@ build() {
     -DProtobuf_LIBRARY=/usr/lib/libprotobuf.so 
     # -DWITH_UCX=OFF \
     # make -j6
-    sed -i -e 's/-lpthread/\/usr\/lib\/libprotobuf.a -lpthread -lprotobuf/g' ./CMakeFiles/cuml++.dir/link.txt
-    make -j6 VERBOSE=1
+    sed -i -e 's/-lpthread/-lpthread -lprotobuf/g' ./CMakeFiles/cuml++.dir/link.txt
+    # sed -i -e 's/-lpthread/\/usr\/lib\/libprotobuf.a -lpthread -lprotobuf/g' ./CMakeFiles/cuml++.dir/link.txt
 
+    make -j6 VERBOSE=1
     export LD_LIBRARY_PATH=/usr/lib:/opt/cuda/lib64:/opt/cuda/extras/CUPTI/lib64:/opt/magma/lib
     export CUDA_PATH=/opt/cuda
     export CUDA_HOME=/opt/cuda

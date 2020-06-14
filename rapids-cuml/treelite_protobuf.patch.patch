@@ -1,0 +1,38 @@
+*** cuml-dist/cpp/cmake/treelite_protobuf.patch	2020-06-14 05:33:52.162433726 +0900
+--- cuml/cpp/cmake/treelite_protobuf.patch	2020-06-14 05:34:14.892467856 +0900
+***************
+*** 22,28 ****
+  index b07f9c6..108603a 100644
+  --- a/CMakeLists.txt
+  +++ b/CMakeLists.txt
+! @@ -22,12 +22,8 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+   
+   # Protobuf
+   if (ENABLE_PROTOBUF)
+--- 22,28 ----
+  index b07f9c6..108603a 100644
+  --- a/CMakeLists.txt
+  +++ b/CMakeLists.txt
+! @@ -22,12 +22,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+   
+   # Protobuf
+   if (ENABLE_PROTOBUF)
+***************
+*** 32,39 ****
+  -  set(PROTOBUF_PROTOC_EXECUTABLE protoc)
+  -  set(PROTOBUF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/3rdparty/protobuf/src")
+  -  set(PROTOBUF_LIBRARIES libprotobuf)
+- +  set(Protobuf_USE_STATIC_LIBS ON)
+  +  find_package(Protobuf REQUIRED)
+     add_definitions(-DTREELITE_PROTOBUF_SUPPORT)
+   else()
+!    set(PROTOBUF_LIBRARIES "")
+\ No newline at end of file
+--- 32,38 ----
+  -  set(PROTOBUF_PROTOC_EXECUTABLE protoc)
+  -  set(PROTOBUF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/3rdparty/protobuf/src")
+  -  set(PROTOBUF_LIBRARIES libprotobuf)
+  +  find_package(Protobuf REQUIRED)
+     add_definitions(-DTREELITE_PROTOBUF_SUPPORT)
+   else()
+!    set(PROTOBUF_LIBRARIES "")
