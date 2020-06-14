@@ -3,7 +3,7 @@
 
 pkgname=python-cupy
 _pkgname=cupy
-pkgver=8.0.0b3.r96.g2025b1675
+pkgver=8.0.0b3.r243.g5b5431114
 _pkgver=7.4.0
 pkgrel=1
 pkgdesc='NumPy-like API accelerated with CUDA'
@@ -44,6 +44,10 @@ build() {
 nn_path=/usr
 
 }
+# check(){
+#   cd "$srcdir/$_pkgname"
+#   pytest tests
+# }
 
 package() {
   cd $_pkgname
