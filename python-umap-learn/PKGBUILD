@@ -1,19 +1,33 @@
 _name=umap-learn
 pkgname=python-$_name
-pkgver=0.4.4
+pkgver=0.4.3.r.g114c0f0
 pkgrel=1
 pkgdesc='Uniform Manifold Approximation and Projection'
 arch=(any)
 url="https://github.com/lmcinnes/umap"
 license=(BSD)
 depends=(python-scipy python-scikit-learn python-numba)
-source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
+makedepends=('python-setuptools')
+source=("git+https://github.com/lmcinnes/umap.git#branch=0.5dev")
 sha256sums=('SKIP')
+
+pkgver() {
+    cd umap
+
+    local _version
+    local _revision
+    local _shorthash
+
+    _version="$(git -C umap describe --tags --long | awk -F'-' '{ sub(/^n/, "", $1); print $1 }')"
+    _revision="$(git -C umap describe --tags --match 'N' | awk -F'-' '{ print $2 }')"
+    _shorthash="$(git -C umap rev-parse --short HEAD)"
+    printf '%s.r%s.g%s' "$_version" "$_revision" "$_shorthash"
+
+}
+
 
 
 package() {
-	cd "$_name-$pkgver"
-#	sed -i -e 's/numba.targets/numba.core/g' ./umap/spectral.py
-
+	cd umap
 	python setup.py install --root="$pkgdir" --optimize=1 || return 1
 }
