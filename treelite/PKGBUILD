@@ -5,14 +5,14 @@
 
 pkgname=('treelite' 'python-treelite')
 _pkgname=treelite
-pkgver=0.91.r.gf5c0cb8.r.g
-_pkgver=0.91
+pkgver=0.92rc2.r.g9cbcac1.r.g
+_pkgver=0.92
 pkgrel=1
 pkgdesc="decision tree"
 arch=('x86_64')
 url=""
 license=('custom')
-depends=('cmake' 'fmt' 'xgboost' )
+depends=('cmake' 'fmt' 'xgboost' 'gcc8')
 makedepends=('python-setuptools')
 # source=("${_pkgname}::git+https://github.com/dmlc/treelite.git")
 source=("${_pkgname}::git+https://github.com/dmlc/treelite.git#tag=${_pkgver}")
@@ -36,8 +36,8 @@ pkgver() {
 
 build() {
   cd "${srcdir}/treelite"
-  # git submodule sync --recursive && git submodule update --init --remote --recursive
-  git submodule update --init --remote --recursive
+  git submodule sync --recursive && git submodule update --init --remote --recursive
+  # git submodule update --init --remote --recursive
 
 
   mkdir -p build
@@ -49,13 +49,16 @@ build() {
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
+    -DENABLE_PROTOBUF=ON \
     -DBUILD_TESTS=OFF \
     -DBUILD_BENCHMARKS=OFF \
     -DCMAKE_CXX11_ABI=ON 
   make -j6
   cd "${srcdir}"/treelite/python
   export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
+  python setup.py build_ext --inplace --library-dir="${srcdir}/treelite/build"
 
+  cd "${srcdir}"/treelite/runtime/python
   python setup.py build_ext --inplace --library-dir="${srcdir}/treelite/build"
 }
 
@@ -71,6 +74,9 @@ package_treelite() {
 package_python-treelite() {
   frprnfd=('python-numpy' 'python-scipy')
   cd "${srcdir}"/treelite/python
+  python setup.py install --prefix=/usr --root="${pkgdir}" --optimize=1
+
+  cd "${srcdir}"/treelite/runtime/python
   python setup.py install --prefix=/usr --root="${pkgdir}" --optimize=1
 
   install -Dm644 ${srcdir}/treelite/LICENSE ${pkgdir}/usr/share/licenses/python-treelite/LICENSE
