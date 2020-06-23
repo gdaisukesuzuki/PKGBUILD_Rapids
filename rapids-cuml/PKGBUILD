@@ -5,7 +5,7 @@
 
 pkgname=(rapids-cuml)
 _pkgname=cuml
-pkgver=0.15.0a.r448.g591b5fb8d
+pkgver=0.15.0a.r609.gafc4eb895
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
@@ -16,11 +16,13 @@ depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'zlib' 'blas' 'pytho
 optional=('openucx')
 # source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git"
 source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#branch=branch-0.15"
-  "setup.py.patch" "treelite_protobuf.patch.patch")
+  "setup.py.patch")
+  # "setup.py.patch" "treelite_protobuf.patch.new")
+  # "setup.py.patch" "treelite_protobuf.patch.patch")
 
 # sha256sums=('SKIP')
-# sha256sums=('SKIP' 'SKIP')
-sha256sums=('SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP')
+# sha256sums=('SKIP' 'SKIP' 'SKIP')
 
 pkgver() {
     cd cuml
@@ -40,7 +42,8 @@ pkgver() {
 build() {
   cd "${srcdir}"
   patch -p0 < setup.py.patch
-  patch -p0 < treelite_protobuf.patch.patch 
+  # patch -p0 < treelite_protobuf.patch.patch 
+  # cp treelite_protobuf.patch.new cuml/cpp/cmake/treelite_protobuf.patch
   cd "${srcdir}/cuml"
   git submodule update --init --remote --recursive
 
@@ -56,7 +59,7 @@ build() {
    #  -DPARALLEL_LEVEL=6 \
    # -DENABLE_PROTOBUF=ON \
   cmake .. \
-    -DCMAKE_CXX_FLAGS="-march=skylake -O3 -pthread" \
+    -DCMAKE_CXX_FLAGS="-march=skylake -O3 -pipe -pthread" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
@@ -76,12 +79,12 @@ build() {
     -DBUILD_CUML_PRIMS_BENCH=OFF \
     -DBUILD_CUML_STD_COMMS=OFF \
     -DBUILD_CUML_MPI_COMMS=OFF \
-    -DProtobuf_LIBRARY=/usr/lib/libprotobuf.so 
-    # -DWITH_UCX=OFF \
+    -DPROTOBUF_LIBRARY=/usr/lib/libprotobuf.so 
+    # -DWITH_UCX=OFF 
     # make -j6
     sed -i -e 's/-lpthread/-lpthread -lprotobuf/g' ./CMakeFiles/cuml++.dir/link.txt
     # sed -i -e 's/-lpthread/\/usr\/lib\/libprotobuf.a -lpthread -lprotobuf/g' ./CMakeFiles/cuml++.dir/link.txt
-
+    export Protobuf_LIBRARY=/usr/lib/libprotobuf.so
     make -j6 VERBOSE=1
     export LD_LIBRARY_PATH=/usr/lib:/opt/cuda/lib64:/opt/cuda/extras/CUPTI/lib64:/opt/magma/lib
     export CUDA_PATH=/opt/cuda
