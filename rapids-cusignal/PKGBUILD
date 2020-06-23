@@ -5,19 +5,20 @@
 
 pkgname=(rapids-cusignal)
 _pkgname=cusignal
-pkgver=0.15.0a.r29.gfe81d5e
+pkgver=0.15.0a.r114.ge0ae76f
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
-depends=('python-cupy' 'python-numba')
+depends=('python-cupy' 'python-numba' 'python-scipy' 'python-six')
 # source=("${_pkgname}::git+https://github.com/rapidsai/cusignal.git")
-source=("${_pkgname}::git+https://github.com/rapidsai/cusignal.git#branch=branch-0.15")
+source=("${_pkgname}::git+https://github.com/rapidsai/cusignal.git#branch=branch-0.15"
+  "windows.py.patch" "spectral.py.patch" )
 
-sha256sums=('SKIP')
+# sha256sums=('SKIP')
 # sha256sums=('SKIP' 'SKIP')
-# sha256sums=('SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP')
 
 pkgver() {
     cd cusignal
@@ -36,7 +37,9 @@ pkgver() {
 
 build() {
   cd "${srcdir}"
-  # patch -p0 < setup.py.patch
+  patch -p0 < windows.py.patch
+  patch -p0 < spectral.py.patch
+
   cd "${srcdir}/cusignal"
   git submodule update --init --remote --recursive
 
@@ -53,7 +56,7 @@ build() {
     export GPU_ARCHS=75
 
     cd "${srcdir}"/cusignal/python
-    find . -name '*.py' | xargs fgrep -l "numba.types" | xargs sed -i -e 's/numba.types/numba.core.types/g'
+#     find . -name '*.py' | xargs fgrep -l "numba.types" | xargs sed -i -e 's/numba.types/numba.core.types/g'
 
     python setup.py build_ext  --inplace --verbose
 

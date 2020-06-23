@@ -1,0 +1,19 @@
+*** cusignal/python/cusignal/windows/windows.py-dist	2020-06-23 20:58:09.797477701 +0900
+--- cusignal/python/cusignal/windows/windows.py	2020-06-23 20:58:23.320240543 +0900
+***************
+*** 15,21 ****
+  from cupyx.scipy import fftpack, special
+  from cupy import (array, ones, zeros, cos, arange, sqrt, pi, linspace, abs,
+                    sin, exp)
+! from scipy._lib.six import string_types
+  
+  import warnings
+  
+--- 15,21 ----
+  from cupyx.scipy import fftpack, special
+  from cupy import (array, ones, zeros, cos, arange, sqrt, pi, linspace, abs,
+                    sin, exp)
+! from six import string_types
+  
+  import warnings
+  

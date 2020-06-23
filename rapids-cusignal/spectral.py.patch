@@ -1,0 +1,19 @@
+*** cusignal/python/cusignal/spectral_analysis/spectral.py-dist	2020-06-23 21:02:07.918851367 +0900
+--- cusignal/python/cusignal/spectral_analysis/spectral.py	2020-06-23 21:02:19.308494446 +0900
+***************
+*** 14,20 ****
+  import cupy as cp
+  from cupy import angle, arange, asarray, reshape, zeros
+  from cupyx.scipy import fftpack
+! from scipy._lib.six import string_types
+  
+  from ..windows.windows import get_window
+  from ..utils.arraytools import (
+--- 14,20 ----
+  import cupy as cp
+  from cupy import angle, arange, asarray, reshape, zeros
+  from cupyx.scipy import fftpack
+! from six import string_types
+  
+  from ..windows.windows import get_window
+  from ..utils.arraytools import (
