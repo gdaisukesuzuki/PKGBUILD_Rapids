@@ -10,7 +10,7 @@ provides=('python-pyarrow=0.17.1')
 confliects=('python-pyarrow')
 url="https://arrow.apache.org"
 license=('Apache')
-depends=('arrow')
+depends=('arrow' 'orc' 'python')
 checkdepends=('git' 'python-hypothesis' 'python-pytest' 'python-pytest-lazy-fixture')
 optdepends=()
 makedepends=('cmake' 'cython')
