@@ -1,0 +1,19 @@
+*** cugraph/python/setup.py-dist	2020-06-23 18:03:07.259485632 +0900
+--- cugraph/python/setup.py	2020-06-23 18:05:19.271823911 +0900
+***************
+*** 107,113 ****
+                              cuda_include_dir],
+                library_dirs=[get_python_lib()],
+                runtime_library_dirs=[conda_lib_dir],
+!               libraries=['cugraph', 'cudf', 'nccl'],
+                language='c++',
+                extra_compile_args=['-std=c++14'])
+  ]
+--- 107,113 ----
+                              cuda_include_dir],
+                library_dirs=[get_python_lib()],
+                runtime_library_dirs=[conda_lib_dir],
+!               libraries=['cugraph', 'cudf', 'nccl', 'cuda', 'cudart', 'cusolver', 'cusparse', 'cublas'],
+                language='c++',
+                extra_compile_args=['-std=c++14'])
+  ]
