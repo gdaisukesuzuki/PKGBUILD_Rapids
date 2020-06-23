@@ -5,7 +5,7 @@
 
 pkgname=(rapids-rmm)
 _pkgname=rmm
-pkgver=0.15.0a.r171.geeed96c
+pkgver=0.15.0a.r191.g9f65999
 pkgrel=1
 pkgdesc="RAPIDS Memory Manager"
 arch=('x86_64')
