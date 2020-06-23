@@ -8,13 +8,14 @@ pkgdesc="A columnar in-memory analytics layer for big data."
 arch=('x86_64')
 url="https://arrow.apache.org"
 license=('Apache')
-depends=('boost-libs' 'brotli' 'double-conversion' 'c-ares-cmake' 'gflags' 'grpc>=1.27.0' 'google-glog' 'lz4' 'protobuf' 'rapidjson' 'snappy' 'thrift' 'uriparser' 'zstd' 'cuda')
+depends=('boost-libs' 'brotli' 'double-conversion' 'c-ares-cmake' 'gflags' 'grpc>=1.27.0' 'google-glog' 'lz4' 'protobuf' 'rapidjson' 'snappy' 'thrift' 'uriparser' 'zstd' 'cuda' 'gcc8')
 checkdepends=('git')
 optdepends=()
 provides=('parquet-cpp' 'arrow=0.17.1')
 conflicts=('parquet-cpp' 'arrow')
 makedepends=('apache-orc' 'boost' 'cmake' 'flatbuffers' 'python-numpy')
-source=("https://github.com/apache/arrow/archive/apache-arrow-$pkgver.tar.gz")
+source=("https://github.com/apache/arrow/archive/apache-arrow-$pkgver.tar.gz"
+)
 sha256sums=('SKIP')
 
 build(){
@@ -50,6 +51,12 @@ build(){
                                       -DGTest_SOURCE=BUNDLED \
                                       -DgRPC_ROOT="/usr"
   sed -i -e 's/GRPC_CPP_PLUGIN-NOTFOUND/\/usr\/bin\/grpc_cpp_plugin/g' ./src/arrow/flight/CMakeFiles/flight_grpc_gen.dir/build.make
+  cd "$srcdir"
+#  patch -p0 < arrow_cuda_build.make.patch
+#  patch -p0 < arrow_cuda_test.make.patch
+#  patch -p0 < arrow_cuda_build.link.patch
+#  patch -p0 < arrow_cuda_test.link.patch
+  cd "$srcdir/build"
   make  -j 6 VERBOSE=1
 }
 
