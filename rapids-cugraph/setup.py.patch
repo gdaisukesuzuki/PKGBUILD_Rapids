@@ -13,7 +13,7 @@
                               cuda_include_dir],
                 library_dirs=[get_python_lib()],
                 runtime_library_dirs=[conda_lib_dir],
-!               libraries=['cugraph', 'cudf', 'nccl', 'cuda', 'cudart', 'cusolver', 'cusparse', 'cublas'],
+!               libraries=['cugraph', 'cudf', 'nccl', 'cuda', 'cudart', 'cusolver', 'cusparse', 'cublas', 'cudnn', 'cutensor'],
                 language='c++',
                 extra_compile_args=['-std=c++14'])
   ]
