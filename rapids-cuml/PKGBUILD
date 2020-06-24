@@ -5,7 +5,7 @@
 
 pkgname=(rapids-cuml)
 _pkgname=cuml
-pkgver=0.15.0a.r609.gafc4eb895
+pkgver=0.15.0a.r644.gf4425a3d1
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
@@ -61,17 +61,20 @@ build() {
   cmake .. \
     -DCMAKE_CXX_FLAGS="-march=skylake -O3 -pipe -pthread" \
     -DCMAKE_BUILD_TYPE=Release \
+    -DBLAS_LIBRARIES=/usr/lib/libopenblas.so \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
     -DBUILD_CUML_C_LIBRARY=ON \
+    -DSINGLEGPU=ON \
     -DGPU_ARCHS=75 \
     -DCMAKE_CXX11_ABI=ON \
     -DNVTX=OFF \
-    -DBUILD_CUML_TESTS=ON \
+    -DBUILD_CUML_TESTS=OFF \
     -DBUILD_CUML_STD_COMMS=OFF \
+              -DBUILD_CUML_MPI_COMMS=OFF \
+          -DBUILD_CUML_MG_TESTS=OFF \
     -DWITH_UCX=ON \
     -DBUILD_CUML_MPI_COMMS=OFF \
-    -DNCCL_PATH=/usr/lib \
     -DBUILD_CUML_MG_TESTS=OFF \
     -DBUILD_PRIMS_TESTS=OFF \
     -DBUILD_CUML_EXAMPLES=OFF \
@@ -79,13 +82,15 @@ build() {
     -DBUILD_CUML_PRIMS_BENCH=OFF \
     -DBUILD_CUML_STD_COMMS=OFF \
     -DBUILD_CUML_MPI_COMMS=OFF \
+    -DENABLE_CUMLPRIMS_MG=OFF \
+    -DDISABLE_CUMLPRIMS_MG=ON \
     -DPROTOBUF_LIBRARY=/usr/lib/libprotobuf.so 
     # -DWITH_UCX=OFF 
     # make -j6
     sed -i -e 's/-lpthread/-lpthread -lprotobuf/g' ./CMakeFiles/cuml++.dir/link.txt
     # sed -i -e 's/-lpthread/\/usr\/lib\/libprotobuf.a -lpthread -lprotobuf/g' ./CMakeFiles/cuml++.dir/link.txt
     export Protobuf_LIBRARY=/usr/lib/libprotobuf.so
-    make -j6 VERBOSE=1
+    make -j6 VERBOSE=1 cuml++ cuml 
     export LD_LIBRARY_PATH=/usr/lib:/opt/cuda/lib64:/opt/cuda/extras/CUPTI/lib64:/opt/magma/lib
     export CUDA_PATH=/opt/cuda
     export CUDA_HOME=/opt/cuda
@@ -106,7 +111,7 @@ build() {
 package_rapids-cuml() {
   cd "${srcdir}"/cuml/cpp/build
 
-  make DESTDIR="${pkgdir}" install
+  make cuml cuml++ DESTDIR="${pkgdir}" install
 
   cd "${srcdir}"/cuml/python
   python setup.py install --single-version-externally-managed  --prefix=/usr --root="${pkgdir}" --optimize=1 --singlegpu
