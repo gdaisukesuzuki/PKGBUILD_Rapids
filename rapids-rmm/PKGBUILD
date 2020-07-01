@@ -5,18 +5,20 @@
 
 pkgname=(rapids-rmm)
 _pkgname=rmm
-pkgver=0.15.0a.r191.g9f65999
+pkgver=0.15.0a.r257.g76ead42
 pkgrel=1
 pkgdesc="RAPIDS Memory Manager"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
-depends=('gcc8' 'cython' 'cuda' 'cmake' 'python-numba')
+depends=('gcc8' 'cython' 'cuda' 'cmake' 'python-numba' 'spdlog')
 # source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git")
 source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git#branch=branch-0.15"
-    "setup.py.patch")
+  )
+    # "setup.py.patch")
 
-sha256sums=('SKIP' 'SKIP')
+sha256sums=('SKIP')
+# sha256sums=('SKIP' 'SKIP')
 
 pkgver() {
     cd rmm
@@ -45,7 +47,7 @@ build() {
   mkdir -p build
   cd build
   cmake .. \
-    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
+    -DCMAKE_CXX_FLAGS="-march=skylake -O3 -DSPDLOG_FMT_EXTERNAL" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
@@ -56,7 +58,7 @@ build() {
   make -j6
 
   cd "${srcdir}"
-  patch -p0 < setup.py.patch
+#  patch -p0 < setup.py.patch
 
   cd "${srcdir}"/rmm/python
   export LD_LIBRARY_PATH=/usr/lib:/opt/cuda/lib64:/opt/cuda/extras/CUPTI/lib64:/opt/magma/lib
@@ -64,7 +66,7 @@ build() {
   export CUDA_HOME=/opt/cuda
 
   export PATH=/opt/cuda:$PATH
-  export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
+  export CFLAGS='-march=skylake -mtune=native -O3 -pipe -DSPDLOG_FMT_EXTERNAL -fstack-protector -I/opt/cuda/include'
   export NVCC='/opt/cuda/bin/nvcc'
   export CUB_PATH=/usr
   export LDFLAGS=-L/opt/cuda/lib64
