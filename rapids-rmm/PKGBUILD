@@ -14,11 +14,11 @@ license=('custom')
 depends=('gcc8' 'cython' 'cuda' 'cmake' 'python-numba' 'spdlog')
 # source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git")
 source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git#branch=branch-0.15"
+     "setup.py.patch"
   )
-    # "setup.py.patch")
 
-sha256sums=('SKIP')
-# sha256sums=('SKIP' 'SKIP')
+# sha256sums=('SKIP')
+sha256sums=('SKIP' 'SKIP')
 
 pkgver() {
     cd rmm
@@ -58,7 +58,7 @@ build() {
   make -j6
 
   cd "${srcdir}"
-#  patch -p0 < setup.py.patch
+  patch -p0 < setup.py.patch
 
   cd "${srcdir}"/rmm/python
   export LD_LIBRARY_PATH=/usr/lib:/opt/cuda/lib64:/opt/cuda/extras/CUPTI/lib64:/opt/magma/lib
