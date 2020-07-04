@@ -5,7 +5,7 @@
 
 pkgname=(rapids-cuml)
 _pkgname=cuml
-pkgver=0.15.0a.r644.gf4425a3d1
+pkgver=0.15.0a.r800.g6223eb8d6
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
@@ -16,13 +16,15 @@ depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'zlib' 'blas' 'pytho
 optional=('openucx')
 # source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git"
 source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#branch=branch-0.15"
-  "setup.py.patch")
+  "setup.py.patch"
+  "test_arima.py.patch"
+)
   # "setup.py.patch" "treelite_protobuf.patch.new")
   # "setup.py.patch" "treelite_protobuf.patch.patch")
 
 # sha256sums=('SKIP')
-sha256sums=('SKIP' 'SKIP')
-# sha256sums=('SKIP' 'SKIP' 'SKIP')
+# sha256sums=('SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP')
 
 pkgver() {
     cd cuml
@@ -42,6 +44,7 @@ pkgver() {
 build() {
   cd "${srcdir}"
   patch -p0 < setup.py.patch
+  patch -p0 < test_arima.py-patch
   # patch -p0 < treelite_protobuf.patch.patch 
   # cp treelite_protobuf.patch.new cuml/cpp/cmake/treelite_protobuf.patch
   cd "${srcdir}/cuml"

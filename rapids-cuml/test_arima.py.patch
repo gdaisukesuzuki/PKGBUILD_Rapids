@@ -1,0 +1,38 @@
+*** cuml/python/cuml/test/test_arima.py-dist	2020-07-03 15:11:48.164879489 +0900
+--- cuml/python/cuml/test/test_arima.py	2020-07-04 00:16:35.288024055 +0900
+***************
+*** 40,46 ****
+  import warnings
+  
+  import pandas as pd
+! from scipy.optimize.optimize import _approx_fprime_helper
+  import statsmodels.api as sm
+  
+  import cudf
+--- 40,47 ----
+  import warnings
+  
+  import pandas as pd
+! from scipy.optimize.optimize import approx_fprime
+! # from scipy.optimize.optimize import _approx_fprime_helper
+  import statsmodels.api as sm
+  
+  import cudf
+***************
+*** 392,398 ****
+              return model_i._loglike(x)
+  
+          scipy_grad[N * i: N * (i + 1)] = \
+!             _approx_fprime_helper(x[N * i: N * (i + 1)], f, h)
+  
+      # Compare
+      np.testing.assert_allclose(batched_grad, scipy_grad, rtol=0.001, atol=0.01)
+--- 393,400 ----
+              return model_i._loglike(x)
+  
+          scipy_grad[N * i: N * (i + 1)] = \
+!             approx_fprime(x[N * i: N * (i + 1)], f, h)
+!             # _approx_fprime_helper(x[N * i: N * (i + 1)], f, h)
+  
+      # Compare
+      np.testing.assert_allclose(batched_grad, scipy_grad, rtol=0.001, atol=0.01)
