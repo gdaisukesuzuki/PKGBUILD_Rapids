@@ -5,7 +5,7 @@
 
 pkgname=('treelite' 'python-treelite')
 _pkgname=treelite
-pkgver=0.92rc2.r.g9cbcac1.r.g
+pkgver=0.92.r.g46c8390
 _pkgver=0.92
 pkgrel=1
 pkgdesc="decision tree"
@@ -14,23 +14,20 @@ url=""
 license=('custom')
 depends=('cmake' 'fmt' 'xgboost' 'gcc8')
 makedepends=('python-setuptools')
-# source=("${_pkgname}::git+https://github.com/dmlc/treelite.git")
-source=("${_pkgname}::git+https://github.com/dmlc/treelite.git#tag=${_pkgver}")
+source=("${_pkgname}::git+https://github.com/dmlc/treelite.git")
+# source=("${_pkgname}::git+https://github.com/dmlc/treelite.git#tag=${_pkgver}")
 
 sha256sums=('SKIP')
 
 pkgver() {
-    cd treelite
-
     local _version
     local _revision
     local _shorthash
 
-    _version="$(git tag | sort -Vr | head -n1 | sed 's/^v//')"
-    # _revision="$(git rev-list v"${_version}"..HEAD --count)"
-    _shorthash="$(git rev-parse --short HEAD)"
-
-    printf '%s.r.g%s' "$_version" "$_revision" "$_shorthash"
+    _version="$(git -C treelite describe --tags --long | awk -F'-' '{ sub(/^n/, "", $1); print $1 }')"
+    _revision="$(git -C treelite describe --tags --match 'N' | awk -F'-' '{ print $2 }')"
+    _shorthash="$(git -C treelite rev-parse --short HEAD)"
+    printf '%s.r%s.g%s' "$_version" "$_revision" "$_shorthash"
 }
 
 
@@ -52,6 +49,7 @@ build() {
     -DENABLE_PROTOBUF=ON \
     -DBUILD_TESTS=OFF \
     -DBUILD_BENCHMARKS=OFF \
+    -DDprotobuf_BUILD_SHARED_LIBS=OFF \
     -DCMAKE_CXX11_ABI=ON 
   make -j6
   cd "${srcdir}"/treelite/python
