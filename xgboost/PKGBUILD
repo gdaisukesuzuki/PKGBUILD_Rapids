@@ -4,17 +4,33 @@ _name=xgboost
 pkgbase=xgboost
 pkgname=('xgboost'
          'python-xgboost')
-pkgver=1.1.1
-pkgrel=2
+pkgver=1.1.1.r91.g1a0801238
+pkgrel=1
 url='https://github.com/dmlc/xgboost'
 license=('APACHE')
-source=('git+https://github.com/dmlc/xgboost.git#tag=v1.1.1'
+#source=('git+https://github.com/dmlc/xgboost.git#tag=v1.1.1'
+source=('git+https://github.com/dmlc/xgboost.git'
         'python_no_libs.patch')
 depends=('gcc8' 'cuda' 'openmp')
 makedepends=('python-setuptools')
 arch=('x86_64')
 sha256sums=('SKIP'
             '4940b84afffe9c2be646d0f77bcfb0d8d36aadcabc4a83b40113e1d97ae917b5')
+
+pkgver() {
+    cd xgboost
+
+    local _version
+    local _revision
+    local _shorthash
+
+    _version="$(git tag | sort -Vr | head -n1 | sed 's/^v//')"
+    _revision="$(git rev-list v"${_version}"..HEAD --count)"
+    _shorthash="$(git rev-parse --short HEAD)"
+
+    printf '%s.r%s.g%s' "$_version" "$_revision" "$_shorthash"
+}
+
 
 prepare() {
   cd "${_name}"
