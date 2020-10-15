@@ -5,20 +5,23 @@
 
 pkgname=(rapids-rmm)
 _pkgname=rmm
-pkgver=0.15.0a.r257.g76ead42
+#conflicts=(spdlog)
+pkgver=0.17.0a.r9.g7286d32
 pkgrel=1
 pkgdesc="RAPIDS Memory Manager"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
-depends=('gcc8' 'cython' 'cuda' 'cmake' 'python-numba' 'spdlog')
+depends=('spdlog' 'cython' 'cuda' 'cmake' 'python-numba' 'fmt')
+# depends=('gcc9' 'cython' 'cuda' 'cmake' 'python-numba' 'spdlog')
 # source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git")
-source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git#branch=branch-0.15"
+source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git#branch=branch-0.17"
      "setup.py.patch"
+     "gpu.pxi"
   )
 
 # sha256sums=('SKIP')
-sha256sums=('SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP')
 
 pkgver() {
     cd rmm
@@ -39,23 +42,33 @@ build() {
   cd "${srcdir}/rmm"
   git submodule update --init --remote --recursive
 
-  export CC=/usr/bin/gcc-8
-  export CXX=/usr/bin/g++-8
-  export CUDAHOSTCXX=/usr/bin/g++-8
+  export CUDAHOSTCXX=/usr/bin/g++
 
+ mkdir -p python/rmm/_cuda/11.1
+ cd  python/rmm/_cuda/11.1
+ ln -fs "${srcdir}/gpu.pxi" .
 
+  cd "${srcdir}/rmm"
   mkdir -p build
   cd build
+  #  -DCMAKE_CXX_FLAGS="-march=skylake -O3 -DSPDLOG_FMT_EXTERNAL" \
   cmake .. \
-    -DCMAKE_CXX_FLAGS="-march=skylake -O3 -DSPDLOG_FMT_EXTERNAL" \
+    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
+    -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++ \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
     -DBUILD_TESTS=OFF \
     -DBUILD_BENCHMARKS=OFF \
+    -DPER_THREAD_DEFAULT_STREAM=ON \
     -DCMAKE_CXX11_ABI=ON \
     -DGPU_TARGET="sm_75"
-  make -j6
+  # make spdlog
+  make -j6 all
+
+  cd "${srcdir}"/rmm/include
+  # ln -sf ../build/_deps/cnmam-src/include/cnmem.h .
+  # ln -sf ../build/_deps/spdlog-src/include/spdlog .
 
   cd "${srcdir}"
   patch -p0 < setup.py.patch
@@ -72,14 +85,30 @@ build() {
   export LDFLAGS=-L/opt/cuda/lib64
 
   python setup.py build_ext --inplace --library-dir="${srcdir}/rmm/build"
+  # python setup.py build  --library-dir="${srcdir}/rmm/build"
 }
 
 package_rapids-rmm() {
   cd "${srcdir}"/rmm/build
   make DESTDIR="${pkgdir}" install
+#  cd "${srcdir}"/rmm/build/_deps/spdlog-build
+#  make DESTDIR="${pkgdir}" install
+#  cd "${srcdir}"/rmm/build/_deps/spdlog-src/include
+#  cp -pr spdlog ${pkgdir}/usr/include
   cd "${srcdir}"/rmm/python
-  python setup.py install --prefix=/usr --root="${pkgdir}" --optimize=1
+  export LD_LIBRARY_PATH=/opt/cuda/lib64:${srcdir}/rmm/build:$LD_LIBRARY_PATH
+  python setup.py install --prefix=/usr --root="${pkgdir}"  --optimize=1  --skip-build
+  cp rmm/*.py ${pkgdir}/usr/lib/python3.8/site-packages/rmm/
+  cp rmm/_lib/*.pxd ${pkgdir}/usr/lib/python3.8/site-packages/rmm/_lib/
+  cp rmm/_cuda/*.pxd ${pkgdir}/usr/lib/python3.8/site-packages/rmm/_cuda/
+#  cp rmm/tests/*.pxd ${pkgdir}/usr/lib/python3.8/site-packages/rmm/tests/
+  cp rmm/_cuda/*.py ${pkgdir}/usr/lib/python3.8/site-packages/rmm/_cuda/
+  cp rmm/_lib/*.py ${pkgdir}/usr/lib/python3.8/site-packages/rmm/_lib/
+  cp rmm/tests/*.py ${pkgdir}/usr/lib/python3.8/site-packages/rmm/tests/
 
+  #cd "${srcdir}"/rmm/build/_deps/spdlog-src/include
+  #mkdir -p ${pkgdir}/usr/include
+  #cp -pr spdlog ${pkgdir}/usr/include
 
   install -Dm644 ${srcdir}/rmm/LICENSE ${pkgdir}/usr/share/licenses/rapids-rmm/LICENSE
 }
