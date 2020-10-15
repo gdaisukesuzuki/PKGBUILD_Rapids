@@ -53,6 +53,10 @@ Operation is not necessarily guaranteed. The author are not responsible for any 
 *  See githubs. [llvmlite](https://github.com/numba/llvmlite) and [numba](https://github.com/numba/numba)
 ```
 
+5.5 . [spglog](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/spdlog/PKGBUILD)
+```
+*  SPDLOG_FMT_EXTERNAL=OFF (the difference from Arch linux)
+```
 
 6.  [RMM](https://github.com/gdaisukesuzuki/PKGBUILD_Rapids/tree/master/rapids-rmm/PKGBUILD)
 ```
