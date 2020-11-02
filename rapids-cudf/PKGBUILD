@@ -5,23 +5,30 @@
 
 pkgname=(rapids-cudf)
 _pkgname=cudf
-pkgver=0.15.0a.r1715.g7f91a17a9
+pkgver=0.17.0a.r141.g2df2f3a565
 pkgrel=1
 pkgdesc="RAPIDS Memory Manager"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
-depends=('arrow-cuda' 'python-pyarrow-cuda' 'gcc8' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs' 'python-dask'  'python-distributed' 'protobuf' 'python-versioneer')
+depends=('arrow-cuda>=1.0.0' 'python-pyarrow-cuda' 'python-dask-cuda' 'nccl' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs'  'protobuf' 'python-versioneer' 'python-nvtx')
+# depends=('arrow-cuda<1.0.0' 'python-pyarrow-cuda' 'gcc9' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs' 'python-dask'  'python-distributed' 'protobuf' 'python-versioneer')
 # depends=('arrow-cudf<0.16.0' 'gcc8' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs' 'python-dask'  'python-distributed' 'protobuf')
 makedepends=('python-cmake_setuptools')
 # makedepends=('python-cmake_setuptools' 'protobuf-static')
 # depends=('arrow-cudf<0.16.0' 'gcc8' 'cuda' 'cmake' 'rapids-rmm' 'dlpack' 'boost-libs')
 # source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git"
-source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git#branch=branch-0.15"
+source=("${_pkgname}::git+https://github.com/rapidsai/cudf.git#branch=branch-0.17"
   "cudf_setup.py.patch")
+#  "orc.hpp.patch"
+#  "remove_keys.cu.patch"
+#  "from.arrow.cu.patch"
+#  "cudf_setup.py.patch" "gather.cu.patch" "ipc.cpp.patch" "reader_impl.cu.patch")
 #  "cudf_setup.py.patch" "nvst_CMakeLists.txt.patch")
+#  "from_arrow.cpp.patch"
 
 sha256sums=('SKIP' 'SKIP')
+# sha256sums=('SKIP' 'SKIP' 'SKIP')
 
 pkgver() {
     cd cudf
@@ -40,7 +47,14 @@ pkgver() {
 prepare() {
   cd "${srcdir}"
 #   patch -p0 < nvst_CMakeLists.txt.patch
-   patch -p0 < cudf_setup.py.patch
+#   patch -p0 < gather.cu.patch 
+#   patch -p0 < orc.hpp.patch 
+#  patch -p0 < remove_keys.cu.patch
+  patch -p0 < cudf_setup.py.patch
+#  patch -p0 < from_arrow.cpp.patch
+#   patch -p0 < reader_impl.cu.patch
+#   patch -p0 <  from.arrow.cu.patch
+#    patch -p0 < ipc.cpp.patch
 }
 
 build() {
@@ -51,25 +65,31 @@ build() {
   cd cpp
   mkdir -p build
   cd build
-  export CC=/usr/bin/gcc-8
-  export CXX=/usr/bin/g++-8
-  export CUDAHOSTCXX=/usr/bin/g++-8
+  export CUDAHOSTCXX=/usr/bin/g++
 
+  #  -DCMAKE_CXX_COMPILER=/usr/bin/g++-9 \
+
+  #   -DCMAKE_CUDA_ARCHITECTURES="sm_75" \
   cmake .. \
-    -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
+    -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++ \
+     -DCMAKE_CUDA_ARCHITECTURES="75" \
+     -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=ON \
     -DBUILD_BENCHMARKS=OFF \
     -DBUILD_LEGACY_TESTS=OFF \
     -DGPU_ARCHS=75 \
-    -DUSE_NVTX=OFF \
-    -DCMAKE_CXX11_ABI=ON 
+    -DPER_THREAD_DEFAULT_STREAM=ON \
+    -DUSE_NVTX=ON \
+    -DCMAKE_CXX11_ABI=ON
 
 
   cd "${srcdir}"/cudf/cpp/build
+  sed -i -e 's/\/lib\/libarrow_cuda.so/\/lib\/libarrow_cuda.so -lfmt/g' ./CMakeFiles/cudf.dir/link.txt
 
-  make -j6 cudf VERBOSE=1
+
+  make -j9 cudf VERBOSE=1 
 
   export LD_LIBRARY_PATH=/usr/lib:/opt/cuda/lib64:/opt/cuda/extras/CUPTI/lib64:/opt/magma/lib
   export CUDA_PATH=/opt/cuda
@@ -82,12 +102,11 @@ build() {
 
   # cd "${srcdir}"
   # patch -p0 < nvst_CMakeLists.txt
-  # patch -p0 < cudf_setup.py.patch
 
   # cd "${srcdir}"/cudf/python/nvstrings
   # python setup.py build_ext  --build-lib=${PWD}  --library-dir="${srcdir}"/cudf/cpp/build --verbose
   cd "${srcdir}"/cudf/python/cudf
-  PARALLEL_LEVEL=6 python setup.py build_ext  --inplace  --library-dir="${srcdir}"/cudf/cpp/build --verbose
+  PARALLEL_LEVEL=9 python setup.py build_ext  --inplace  --library-dir="${srcdir}"/cudf/cpp/build --verbose
 
   cd "${srcdir}"/cudf/python/dask_cudf
   python setup.py build_ext --inplace

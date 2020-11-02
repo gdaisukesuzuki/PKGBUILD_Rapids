@@ -1,8 +1,8 @@
-*** cudf/python/cudf/setup.py-dist	2020-06-14 06:08:09.491573207 +0900
---- cudf/python/cudf/setup.py	2020-06-14 06:14:31.242456439 +0900
+*** cudf/python/cudf/setup.py-dist	2020-09-09 22:52:09.714750342 +0900
+--- cudf/python/cudf/setup.py	2020-09-09 22:54:37.050546795 +0900
 ***************
-*** 31,36 ****
---- 31,37 ----
+*** 32,37 ****
+--- 32,38 ----
       raise OSError(f"Invalid CUDA_HOME: directory does not exist: {CUDA_HOME}")
   
   cuda_include_dir = os.path.join(CUDA_HOME, "include")
@@ -11,24 +11,26 @@
   CUDF_ROOT = os.environ.get("CUDF_ROOT", "../../cpp/build/")
   
 ***************
-*** 59,67 ****
+*** 60,68 ****
           ],
           library_dirs=(
               pa.get_library_dirs()
               + [get_python_lib(), os.path.join(os.sys.prefix, "lib")]
           ),
-!         libraries=["cudf"] + pa.get_libraries(),
+!         libraries=["cudf"] + pa.get_libraries() + ["arrow_cuda"],
           language="c++",
           extra_compile_args=["-std=c++14"],
       )
---- 60,69 ----
+--- 61,72 ----
           ],
           library_dirs=(
               pa.get_library_dirs()
 +             + [cuda_library_dir]
               + [get_python_lib(), os.path.join(os.sys.prefix, "lib")]
           ),
-!         libraries=["cudf","cuda","cudart","nccl"] + pa.get_libraries(),
+!         libraries=["cudf","cuda","cudart","fmt"] + pa.get_libraries() + ["arrow_cuda"]
+!             + ["cudf_ast","cudf_base","cudf_comms","cudf_hash","cudf_interop","cudf_io","cudf_join","cudf_merge","cudf_partitioning"]
+!             + ["cudf_reductions","cudf_replace","cudf_reshape","cudf_rolling","cudf_transpose"],
           language="c++",
           extra_compile_args=["-std=c++14"],
       )
