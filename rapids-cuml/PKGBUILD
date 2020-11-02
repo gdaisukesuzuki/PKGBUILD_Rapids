@@ -5,25 +5,27 @@
 
 pkgname=(rapids-cuml)
 _pkgname=cuml
-pkgver=0.15.0a.r800.g6223eb8d6
+pkgver=0.17.0a.r98.g7e6d4135c
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
-depends=('clang' 'rapids-cudf' 'gcc8' 'cuda' 'cmake' 'nccl' 'zlib' 'blas' 'python' 'cython' 'python-cupy' 'protobuf')
+# depends=('rapids-cudf' 'gcc9' 'cuda' 'cmake'  'zlib' 'blas' 'python' 'cython' 'python-cupy' 'protobuf')
+depends=('rapids-cudf'  'cuda' 'cmake'  'zlib' 'blas' 'python' 'cython' 'python-cupy' 'protobuf' 'python-treelite')
 # makedepends=('protobuf-static')
 optional=('openucx')
 # source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git"
-source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#branch=branch-0.15"
+source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#branch=branch-0.17"
   "setup.py.patch"
-  "test_arima.py.patch"
+  "knn.cuh.patch"
 )
+#  "qn_solvers.cuh.patch"
+# sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
   # "setup.py.patch" "treelite_protobuf.patch.new")
   # "setup.py.patch" "treelite_protobuf.patch.patch")
 
 # sha256sums=('SKIP')
-# sha256sums=('SKIP' 'SKIP')
 sha256sums=('SKIP' 'SKIP' 'SKIP')
 
 pkgver() {
@@ -43,8 +45,13 @@ pkgver() {
 
 build() {
   cd "${srcdir}"
-  patch -p0 < setup.py.patch
-  patch -p0 < test_arima.py-patch
+ patch -p0 < setup.py.patch
+#  patch -p0 < cusparse_wrappers.h.patch
+#  patch -p0 < qn_solvers.cuh.patch
+  #patch -p0 < qn_linesearch.cuh.patch
+  patch -p0 < knn.cuh.patch
+#  patch -p0 < ml_cuda_utils.h.patch
+  # patch -p0 < test_arima.py.patch
   # patch -p0 < treelite_protobuf.patch.patch 
   # cp treelite_protobuf.patch.new cuml/cpp/cmake/treelite_protobuf.patch
   cd "${srcdir}/cuml"
@@ -53,16 +60,18 @@ build() {
   cd cpp
   mkdir -p build
   cd build
-  export CC=/usr/bin/gcc-8
-  export CXX=/usr/bin/g++-8
-  export CUDAHOSTCXX=/usr/bin/g++-8
+  export CUDAHOSTCXX=/usr/bin/g++
 
   export CUDA_HOME=/opt/cuda
   export CUDA_BIN_PATH=$CUDA_HOME
+  export CUDA_ARCHITECTURES="75"
    #  -DPARALLEL_LEVEL=6 \
    # -DENABLE_PROTOBUF=ON \
   cmake .. \
-    -DCMAKE_CXX_FLAGS="-march=skylake -O3 -pipe -pthread" \
+    -DCMAKE_CXX_FLAGS="-fpermissive -march=skylake -O3 -pipe -pthread" \
+    -DCMAKE_C_FLAGS="-fpermissive -march=skylake -O3 -pipe -pthread" \
+     -DPARALLEL_LEVEL=6 \
+       -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++ \
     -DCMAKE_BUILD_TYPE=Release \
     -DBLAS_LIBRARIES=/usr/lib/libopenblas.so \
     -DCMAKE_INSTALL_PREFIX=/usr \
@@ -71,12 +80,13 @@ build() {
     -DSINGLEGPU=ON \
     -DGPU_ARCHS=75 \
     -DCMAKE_CXX11_ABI=ON \
-    -DNVTX=OFF \
+    -DNVTX=ON \
+    -DCMAKE_CUDA_ARCHITECTURES="75" \
     -DBUILD_CUML_TESTS=OFF \
     -DBUILD_CUML_STD_COMMS=OFF \
-              -DBUILD_CUML_MPI_COMMS=OFF \
-          -DBUILD_CUML_MG_TESTS=OFF \
-    -DWITH_UCX=ON \
+     -DBUILD_CUML_MPI_COMMS=OFF \
+     -DBUILD_CUML_MG_TESTS=OFF \
+    -DWITH_UCX=OFF \
     -DBUILD_CUML_MPI_COMMS=OFF \
     -DBUILD_CUML_MG_TESTS=OFF \
     -DBUILD_PRIMS_TESTS=OFF \
@@ -86,14 +96,35 @@ build() {
     -DBUILD_CUML_STD_COMMS=OFF \
     -DBUILD_CUML_MPI_COMMS=OFF \
     -DENABLE_CUMLPRIMS_MG=OFF \
+    -DBUILD_STATIC_FAISS=ON \
     -DDISABLE_CUMLPRIMS_MG=ON \
+    -DNCCL_PATH=/usr \
     -DPROTOBUF_LIBRARY=/usr/lib/libprotobuf.so 
     # -DWITH_UCX=OFF 
     # make -j6
-    sed -i -e 's/-lpthread/-lpthread -lprotobuf/g' ./CMakeFiles/cuml++.dir/link.txt
+
+  cd "${srcdir}"/cuml/cpp/build
+    # sed -i -e 's/-lpthread/-lfaiss -lpthread -lprotobuf/g' ./CMakeFiles/cuml++.dir/link.txt
     # sed -i -e 's/-lpthread/\/usr\/lib\/libprotobuf.a -lpthread -lprotobuf/g' ./CMakeFiles/cuml++.dir/link.txt
     export Protobuf_LIBRARY=/usr/lib/libprotobuf.so
-    make -j6 VERBOSE=1 cuml++ cuml 
+    make clean 
+    # make benchmark
+    # make -j1 raft/fast faiss/fast
+    make -j6 faiss/fast
+    # make -j6 VERBOSE=1 cuml++ cuml # ml
+    find faiss/src -type f -name '*.h' | xargs sed -i -e "s/\<faiss\//faiss\/faiss\//g"
+    find faiss/src -type f -name '*.h' | xargs sed -i -e "s/\<faiss\/faiss\/faiss\//faiss\/faiss\//g"
+    find faiss/src -type f -name '*.h' | xargs sed -i -e "s/\<faiss\/faiss\/faiss\//faiss\/faiss\//g"
+    find faiss/src -type f -name '*.cuh' | xargs sed -i -e "s/\<faiss\//faiss\/faiss\//g"
+    find faiss/src -type f -name '*.cuh' | xargs sed -i -e "s/\<faiss\/faiss\/faiss\//faiss\/faiss\//g"
+    find faiss/src -type f -name '*.cuh' | xargs sed -i -e "s/\<faiss\/faiss\/faiss\//faiss\/faiss\//g"
+    make -j6 VERBOSE=1 cuml++ cuml # ml
+    #   cd "${srcdir}"
+    # patch -p0 < DeviceUtils.cu.patch
+    #   cd "${srcdir}"/cuml/cpp/build
+    #   make -j6 VERBOSE=1 cuml++ cuml 
+    # fi
+
     export LD_LIBRARY_PATH=/usr/lib:/opt/cuda/lib64:/opt/cuda/extras/CUPTI/lib64:/opt/magma/lib
     export CUDA_PATH=/opt/cuda
     export CUDA_HOME=/opt/cuda
@@ -106,7 +137,8 @@ build() {
 
     cd "${srcdir}"/cuml/python
 
-    python setup.py build_ext -j6 --inplace --library-dir="${srcdir}"/cudf/cpp/build  --singlegpu --verbose 
+    python setup.py clean
+    python setup.py build_ext -j6 --inplace --library-dir="${srcdir}"/cudf/cpp/build   --singlegpu --verbose
 
 
 }
@@ -115,9 +147,10 @@ package_rapids-cuml() {
   cd "${srcdir}"/cuml/cpp/build
 
   make cuml cuml++ DESTDIR="${pkgdir}" install
+  rm -rf "${pkgdir}"/home
 
   cd "${srcdir}"/cuml/python
-  python setup.py install --single-version-externally-managed  --prefix=/usr --root="${pkgdir}" --optimize=1 --singlegpu
+  python setup.py install --single-version-externally-managed  --prefix=/usr --root="${pkgdir}" --optimize=1
 
   install -Dm644 ${srcdir}/cuml/LICENSE ${pkgdir}/usr/share/licenses/rapids-cuml/LICENSE
 }
