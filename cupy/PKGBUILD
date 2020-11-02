@@ -3,19 +3,21 @@
 
 pkgname=python-cupy
 _pkgname=cupy
-pkgver=8.0.0b3.r392.ge9f8efcf3
+pkgver=9.0.0a1.r13.g50361e0d4
 _pkgver=7.4.0
 pkgrel=1
 pkgdesc='NumPy-like API accelerated with CUDA'
 arch=('any')
 url='https://github.com/cupy/cupy'
 license=('custom')
-depends=('gcc8' 'python-numpy' 'python-six' 'cub' 'cuda' 'cudnn' 'python-fastrlock' 'libcutensor')
+depends=( 'python-numpy' 'python-six'  'cuda' 'cudnn' 'python-fastrlock' 'libcutensor' 'nccl')
+# depends=('gcc9' 'python-numpy' 'python-six'  'cuda' 'cudnn' 'python-fastrlock' 'libcutensor')
 makedepends=('git' 'python-setuptools')
+checkdepends=('python-pytest' 'python-hypothesis')
 conflicts=('python-cupy')
 provides=('python-cupy')
 source=('git://github.com/cupy/cupy.git')
-# source=('git://github.com/cupy/cupy.git#tag=v8.0.0b2')
+# source=('git://github.com/cupy/cupy.git#tag=v8.0.0')
 # source=("$pkgname-$pkgver.tar.gz::https://github.com/cupy/cupy/archive/v$pkgver.tar.gz")
 md5sums=('SKIP' )
 
@@ -29,25 +31,28 @@ build() {
 #  patch -d cupy -Np1 -i "${srcdir}/../setup_build.py.patch"
 #  cd $_pkgname-$pkgver
  cd $_pkgname
+ git submodule update --init
+
  sed -i -e 's/7999/8999/g' install/build.py
   export CUDA_PATH=/opt/cuda
-  export CC=/usr/bin/gcc-8
-  export CXX=/usr/bin/g++-8
+  export CUDAHOSTCXX=/usr/bin/g++
   export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector'
   export CUPY_NVCC_GENERATE_CODE="arch=compute_75,code=sm_75"
   export LD_LIBRARY_PATH=/usr/lib:/opt/cuda/lib64:/opt/cuda/extras/CUPTI/lib64:/opt/magma/lib
   export PATH=/opt/cuda:$PATH
-  export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -I/opt/cuda/include'
+  export CFLAGS='-march=skylake -mtune=native -O3 -pipe -fstack-protector -std=c++14  -I/opt/cuda/include'
   export NVCC='/opt/cuda/bin/nvcc'
   export CUB_PATH=/usr
-  PARALLEL_LEVEL=6 LANG=C CFLAGS="-O3 -fPIC -march=skylake -mtune=native -fstack-protector -pipe" python setup.py build  --verbose 
+  PARALLEL_LEVEL=6 LANG=C CFLAGS="-O3 -fPIC -march=skylake -mtune=native -fstack-protector -std=c++14  -pipe" python setup.py build  --verbose 
   # LANG=C CFLAGS="-O3 -fPIC -march=skylake -mtune=native -fstack-protector -pipe" python setup.py build  --verbose 
 nn_path=/usr
 
 }
+
+
 # check(){
-#   cd "$srcdir/$_pkgname"
-#   pytest tests
+#  cd "$srcdir/$_pkgname"
+#  pytest tests
 # }
 
 package() {
@@ -55,8 +60,8 @@ package() {
   # cd $_pkgname-$pkgver
 
   export CUDA_PATH=/opt/cuda
-  export CC=/usr/bin/gcc-8
-  export CXX=/usr/bin/g++-8
+  export CC=/usr/bin/gcc-9
+  export CXX=/usr/bin/g++-9
   python setup.py install --root=${pkgdir} --optimize=1
 
   install -D -m644 LICENSE ${pkgdir}/usr/share/licenses/python-$_pkgname
