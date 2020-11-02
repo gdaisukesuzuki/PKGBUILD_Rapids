@@ -1,19 +1,91 @@
-*** rmm/python/setup.py-dist	2020-07-02 10:09:54.066047991 +0900
---- rmm/python/setup.py	2020-07-02 10:11:46.763432756 +0900
+*** rmm/python/setup.py.orig	2020-10-31 23:53:14.723149488 +0900
+--- rmm/python/setup.py	2020-11-01 00:00:19.513312026 +0900
 ***************
-*** 54,60 ****
-              sources=cython_lib,
-              include_dirs=include_dirs,
-              library_dirs=library_dirs,
-!             libraries=["rmm"],
+*** 59,70 ****
+      # use uninstalled headers in source tree
+      rmm_include_dir = "../include"
+  
+  # Preprocessor step to specify correct pxd file with
+  # valid symbols for specific version of CUDA.
+  
+  cwd = os.getcwd()
+  preprocess_files = ["gpu.pxd"]
+! supported_cuda_versions = {"10.1", "10.2", "11.0"}
+  
+  for file_p in preprocess_files:
+      pxi_file = ".".join(file_p.split(".")[:-1])
+--- 59,72 ----
+      # use uninstalled headers in source tree
+      rmm_include_dir = "../include"
+  
++ spdlog_include_dir = "../build/_deps/spdlog-src/include"
++ 
+  # Preprocessor step to specify correct pxd file with
+  # valid symbols for specific version of CUDA.
+  
+  cwd = os.getcwd()
+  preprocess_files = ["gpu.pxd"]
+! supported_cuda_versions = {"10.1", "10.2", "11.0", "11.1"}
+  
+  for file_p in preprocess_files:
+      pxi_file = ".".join(file_p.split(".")[:-1])
+***************
+*** 86,96 ****
+  
+  include_dirs = [
+      rmm_include_dir,
+      os.path.dirname(sysconfig.get_path("include")),
+      cuda_include_dir,
+  ]
+  
+! library_dirs = [get_python_lib(), os.path.join(os.sys.prefix, "lib")]
+  
+  # lib:
+  extensions = cythonize(
+--- 88,99 ----
+  
+  include_dirs = [
+      rmm_include_dir,
++     spdlog_include_dir,
+      os.path.dirname(sysconfig.get_path("include")),
+      cuda_include_dir,
+  ]
+  
+! library_dirs = [get_python_lib(), os.path.join(os.sys.prefix, "lib"), cuda_lib_dir]
+  
+  # lib:
+  extensions = cythonize(
+***************
+*** 104,110 ****
+                  cuda_lib_dir,
+                  os.path.join(os.sys.prefix, "lib"),
+              ],
+!             libraries=["cuda", "cudart"],
               language="c++",
               extra_compile_args=["-std=c++14"],
           )
---- 54,60 ----
-              sources=cython_lib,
-              include_dirs=include_dirs,
-              library_dirs=library_dirs,
-!             libraries=["rmm","fmt","cudart","nccl"],
+--- 107,113 ----
+                  cuda_lib_dir,
+                  os.path.join(os.sys.prefix, "lib"),
+              ],
+!             libraries=["cuda", "cudart", "fmt"],
+              language="c++",
+              extra_compile_args=["-std=c++14"],
+          )
+***************
+*** 128,134 ****
+                  cuda_lib_dir,
+                  os.path.join(os.sys.prefix, "lib"),
+              ],
+!             libraries=["cuda", "cudart"],
+              language="c++",
+              extra_compile_args=["-std=c++14"],
+          )
+--- 131,137 ----
+                  cuda_lib_dir,
+                  os.path.join(os.sys.prefix, "lib"),
+              ],
+!             libraries=["cuda", "cudart", "fmt"],
               language="c++",
               extra_compile_args=["-std=c++14"],
           )

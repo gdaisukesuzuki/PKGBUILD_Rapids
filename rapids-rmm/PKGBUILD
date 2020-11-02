@@ -6,13 +6,14 @@
 pkgname=(rapids-rmm)
 _pkgname=rmm
 #conflicts=(spdlog)
-pkgver=0.17.0a.r9.g7286d32
+pkgver=0.17.0a.r38.gae915ea
 pkgrel=1
 pkgdesc="RAPIDS Memory Manager"
 arch=('x86_64')
 url="https://rapids.ai/"
 license=('custom')
-depends=('spdlog' 'cython' 'cuda' 'cmake' 'python-numba' 'fmt')
+depends=( 'cython' 'cuda' 'cmake' 'python-numba' 'fmt')
+# depends=('spdlog' 'cython' 'cuda' 'cmake' 'python-numba' 'fmt')
 # depends=('gcc9' 'cython' 'cuda' 'cmake' 'python-numba' 'spdlog')
 # source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git")
 source=("${_pkgname}::git+https://github.com/rapidsai/rmm.git#branch=branch-0.17"
@@ -57,12 +58,11 @@ build() {
     -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++ \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCUDA_STATIC_RUNTIME=OFF \
+    -DPER_THREAD_DEFAULT_STREAM=OFF \
     -DBUILD_SHARED_LIBS=ON \
     -DBUILD_TESTS=OFF \
-    -DBUILD_BENCHMARKS=OFF \
-    -DPER_THREAD_DEFAULT_STREAM=ON \
-    -DCMAKE_CXX11_ABI=ON \
-    -DGPU_TARGET="sm_75"
+    -DBUILD_BENCHMARKS=OFF 
   # make spdlog
   make -j6 all
 
