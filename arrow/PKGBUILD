@@ -1,33 +1,36 @@
 # Maintainer: Guillaume Horel <guillaume.horel@gmail.com>
 
-pkgname='arrow-cuda'
+pkgname=('arrow-cuda')
+# pkgname=('arrow-cuda' 'python-pyarrow-cuda')
 pkgbase='arrow'
-pkgver=0.17.1
-pkgrel=0
+pkgver=1.0.1
+pkgrel=1
 pkgdesc="A columnar in-memory analytics layer for big data."
 arch=('x86_64')
 url="https://arrow.apache.org"
 license=('Apache')
-depends=('boost-libs' 'brotli' 'double-conversion' 'c-ares-cmake' 'gflags' 'grpc>=1.27.0' 'google-glog' 'lz4' 'protobuf' 'rapidjson' 'snappy' 'thrift' 'uriparser' 'zstd' 'cuda' 'gcc8')
+depends=('gcc9' 'boost-libs' 'brotli' 'double-conversion' 'c-ares-cmake' 'gflags' 'grpc>=1.27.0' 'google-glog' 'lz4' 'protobuf' 'rapidjson' 'snappy' 'thrift' 'uriparser' 'zstd' 'cuda')
 checkdepends=('git')
 optdepends=()
-provides=('parquet-cpp' 'arrow=0.17.1')
-conflicts=('parquet-cpp' 'arrow')
 makedepends=('apache-orc' 'boost' 'cmake' 'flatbuffers' 'python-numpy')
 source=("https://github.com/apache/arrow/archive/apache-arrow-$pkgver.tar.gz"
+  "tensorflow-abi.patch"
 )
-sha256sums=('SKIP')
+sha256sums=('SKIP' 'SKIP')
 
 build(){
   cd "$srcdir"
+  patch -p0 < "tensorflow-abi.patch"
+
   mkdir -p build
   cd "$srcdir/build"
+  export CUDAHOSTCXX=/usr/bin/g++-9
   CUDA_HOME=/opt/cuda \
   ARROW_BUILD_TOOLCHAIN=/usr ORC_HOME=/usr DOUBLE_CONVERSION_HOME=/usr cmake \
     ../$pkgbase-apache-$pkgbase-$pkgver/cpp -DARROW_DEPENDENCY_SOURCE=SYSTEM \
                                       -DARROW_PYTHON=ON \
                                       -DCMAKE_BUILD_TYPE=Release \
-                                      -DARROW_BUILD_TESTS=ON \
+                                      -DARROW_BUILD_TESTS=OFF \
                                       -DARROW_ALTIVEC=OFF \
                                       -DCMAKE_INSTALL_PREFIX="/usr" \
                                       -DCMAKE_INSTALL_LIBDIR="lib" \
@@ -37,7 +40,7 @@ build(){
                                       -DARROW_ORC=ON \
                                       -DARROW_PARQUET=ON \
                                       -DARROW_PLASMA=ON \
-                                      -DARROW_TENSORFLOW=ON \
+                                      -DARROW_TENSORFLOW=OFF \
                                       -DARROW_USE_SIMD=ON \
                                       -DARROW_SIMD_LEVEL=AVX2 \
                                       -DARROW_FLIGHT=ON \
@@ -58,21 +61,37 @@ build(){
 #  patch -p0 < arrow_cuda_test.link.patch
   cd "$srcdir/build"
   make  -j 6 VERBOSE=1
+
+  cd "$srcdir"/$pkgbase-apache-$pkgbase-$pkgver/python
+  # PARALLEL=6 CUDA_HOME=/opt/cuda ARROW_HOME=/usr PARQUET_HOME=/usr \
+  # PARALLEL=6 CUDA_HOME=/opt/cuda ARROW_HOME="${srcdir}"/build PARQUET_HOME="${srcdir}"/build \
+  #   CC=/usr/bin/gcc-9 CXX=/usr/bin/g++-9 \
+  #   CUDAHOSTCXX=/usr/bin/g++-9 \
+  #   python setup.py build_ext  \
+  #   --with-parquet --with-plasma --with-flight --with-tensor --with-orc \
+  #   --with-dataset --with-cuda \
+  #   --inplace --library-dir="${srcdir}"/build --verbose
+
+
+
 }
 
-package(){
+package_arrow-cuda() {
+provides=('parquet-cpp' 'arrow=0.17.1')
+conflicts=('parquet-cpp' 'arrow')
   cd "$srcdir/build"
   make DESTDIR="${pkgdir}" install
   find "${pkgdir}/usr/lib/" -name "*testing*" -delete
 }
 
-check(){
-   cd "$srcdir"
-   rm -rf parquet-testing
-   git clone https://github.com/apache/parquet-testing.git
-   rm -rf arrow-testing
-   git clone https://github.com/apache/arrow-testing.git
-   cd build
-   PARQUET_TEST_DATA="$srcdir/parquet-testing/data" ARROW_TEST_DATA="$srcdir/arrow-testing/data" make test
-}
+
+#check(){
+#   cd "$srcdir"
+#   rm -rf parquet-testing
+#   git clone https://github.com/apache/parquet-testing.git
+#   rm -rf arrow-testing
+#   git clone https://github.com/apache/arrow-testing.git
+#   cd build
+#   PARQUET_TEST_DATA="$srcdir/parquet-testing/data" ARROW_TEST_DATA="$srcdir/arrow-testing/data" make test
+#}
 # vim:ts=2:sw=2:et:
