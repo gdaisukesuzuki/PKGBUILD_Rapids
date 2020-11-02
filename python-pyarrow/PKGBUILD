@@ -1,51 +1,46 @@
 # Maintainer: Guillaume Horel <guillaume.horel@gmail.com>
 
-pkgname='python-pyarrow-cuda'
-pkgbase='python-pyarrow'
-pkgver=0.17.1
-pkgrel=0
+# pkgname=('arrow-cuda')
+pkgname=('python-pyarrow-cuda')
+pkgbase='arrow'
+pkgver=1.0.1
+pkgrel=1
 pkgdesc="A columnar in-memory analytics layer for big data."
 arch=('x86_64')
-provides=('python-pyarrow=0.17.1')
-confliects=('python-pyarrow')
 url="https://arrow.apache.org"
 license=('Apache')
-depends=('arrow' 'orc' 'python')
-checkdepends=('git' 'python-hypothesis' 'python-pytest' 'python-pytest-lazy-fixture')
+depends=('gcc9' 'arrow-cuda=1.0.1' 'boost-libs' 'brotli' 'double-conversion' 'c-ares-cmake' 'gflags' 'grpc>=1.27.0' 'google-glog' 'lz4' 'protobuf' 'rapidjson' 'snappy' 'thrift' 'uriparser' 'zstd' 'cuda')
+checkdepends=('git')
 optdepends=()
-makedepends=('cmake' 'cython')
+makedepends=('apache-orc' 'boost' 'cmake' 'flatbuffers' 'python-numpy')
 source=("https://github.com/apache/arrow/archive/apache-arrow-$pkgver.tar.gz"
-  "tensorflow-abi.patch")
-sha256sums=('SKIP'
-            'SKIP')
-
-prepare(){
-  cd "$srcdir"
-  patch -p0 < "tensorflow-abi.patch"
-}
+  "tensorflow-abi.patch"
+)
+sha256sums=('SKIP' 'SKIP')
 
 build(){
-  cd "$srcdir/arrow-apache-arrow-$pkgver/python"
+  cd "$srcdir"
+}
+
+package_python-pyarrow-cuda() {
+ provides=('python-pyarrow')
+ cd "$srcdir"
+  patch -p0 < "tensorflow-abi.patch"
+  cd "$srcdir"/$pkgbase-apache-$pkgbase-$pkgver/python
   PARALLEL=6 CUDA_HOME=/opt/cuda ARROW_HOME=/usr PARQUET_HOME=/usr \
-    python setup.py build_ext --build-type=release \
+    python setup.py build_ext  \
     --with-parquet --with-plasma --with-flight --with-tensor --with-orc \
     --with-dataset --with-cuda \
-    --inplace
+    install --root=$pkgdir
 }
 
-package(){
-  cd "$srcdir/arrow-apache-arrow-$pkgver/python"
-  CUDA_HOME=/opt/cuda ARROW_HOME=/usr PARQUET_HOME=/usr \
-  python setup.py build_ext --build-type=release \
-  --with-parquet --with-plasma --with-flight --with-tensor --with-orc \
-  --with-dataset --with-cuda \
-  install --root=$pkgdir
-}
-
-check(){
-  cd "$srcdir/arrow-apache-arrow-$pkgver"
-  git clone https://github.com/apache/arrow-testing.git testing
-  cd python
-  ARROW_TEST_DATA="$srcdir/arrow-apache-arrow-$pkgver/testing/data" PARQUET_HOME=/usr pytest pyarrow/tests
-}
+#check(){
+#   cd "$srcdir"
+#   rm -rf parquet-testing
+#   git clone https://github.com/apache/parquet-testing.git
+#   rm -rf arrow-testing
+#   git clone https://github.com/apache/arrow-testing.git
+#   cd build
+#   PARQUET_TEST_DATA="$srcdir/parquet-testing/data" ARROW_TEST_DATA="$srcdir/arrow-testing/data" make test
+#}
 # vim:ts=2:sw=2:et:
