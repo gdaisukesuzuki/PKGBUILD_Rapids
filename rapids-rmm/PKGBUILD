@@ -6,7 +6,7 @@
 pkgname=(rapids-rmm)
 _pkgname=rmm
 #conflicts=(spdlog)
-pkgver=0.17.0a.r43.gb1ac445
+pkgver=0.17.0a.r47.g6db29e7
 pkgrel=1
 pkgdesc="RAPIDS Memory Manager"
 arch=('x86_64')
@@ -91,10 +91,10 @@ build() {
 package_rapids-rmm() {
   cd "${srcdir}"/rmm/build
   make DESTDIR="${pkgdir}" install
-  cd "${srcdir}"/rmm/build/_deps/spdlog-build
-  make DESTDIR="${pkgdir}" install
-  cd "${srcdir}"/rmm/build/_deps/spdlog-src/include
-  cp -pr spdlog ${pkgdir}/usr/include
+#  cd "${srcdir}"/rmm/build/_deps/spdlog-build
+#  make DESTDIR="${pkgdir}" install
+#  cd "${srcdir}"/rmm/build/_deps/spdlog-src/include
+#  cp -pr spdlog ${pkgdir}/usr/include
   cd "${srcdir}"/rmm/python
   export LD_LIBRARY_PATH=/opt/cuda/lib64:${srcdir}/rmm/build:$LD_LIBRARY_PATH
   python setup.py install --prefix=/usr --root="${pkgdir}"  --optimize=1  --skip-build
