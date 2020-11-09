@@ -4,14 +4,14 @@ _name=xgboost
 pkgbase=xgboost
 pkgname=('xgboost'
          'python-xgboost')
-pkgver=1.1.1.r91.g1a0801238
+pkgver=1.2.1.r0.gbcb15a980
 pkgrel=1
 url='https://github.com/dmlc/xgboost'
 license=('APACHE')
-#source=('git+https://github.com/dmlc/xgboost.git#tag=v1.1.1'
-source=('git+https://github.com/dmlc/xgboost.git'
+#source=('git+https://github.com/dmlc/xgboost.git'
+source=('git+https://github.com/dmlc/xgboost.git#tag=v1.2.1'
         'python_no_libs.patch')
-depends=('gcc8' 'cuda' 'openmp')
+depends=('cuda' 'openmp')
 makedepends=('python-setuptools')
 arch=('x86_64')
 sha256sums=('SKIP'
@@ -42,14 +42,13 @@ build() {
   cd "${_name}"
   mkdir build
   cd build
-  export CC=/usr/bin/gcc-8
-  export CXX=/usr/bin/g++-8
-  export CMAKE_CXX_COMPILER=/usr/bin/g++-8
+  export CMAKE_CXX_COMPILER=/usr/bin/g++
   cmake ..  -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DCMAKE_CXX_FLAGS="-march=skylake -O3" \
     -DCMAKE_CXX11_ABI=ON \
     -DBUILD_SHARED_LIBS=ON \
+    -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++ \
     -DUSE_CUDA=ON \
     -DUSE_OPENMP=OFF \
     -DGPU_COMPUTE_VER=75
