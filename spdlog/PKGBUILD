@@ -1,0 +1,47 @@
+# Maintainer: Brett Cornwall <ainola@archlinux.org>
+# Contributor: Luca Weiss
+# Contributor: Michael Yang
+
+pkgname=spdlog
+pkgver=1.8.1
+pkgrel=2
+pkgdesc='Very fast, header-only/compiled, C++ logging library'
+arch=('x86_64')
+url='https://github.com/gabime/spdlog'
+license=('MIT')
+depends=('fmt')
+makedepends=('cmake')
+source=(
+    "$pkgname-$pkgver.tar.gz::https://github.com/gabime/spdlog/archive/v$pkgver.tar.gz"
+#    "tweakme.h.patch"
+)
+provides=(
+    'libspdlog.so'
+)
+sha256sums=('SKIP')
+# sha256sums=('SKIP' 'SKIP')
+
+build() {
+#    patch -p0 < tweakme.h.patch
+    export CFLAGS+=" ${CPPFLAGS}"
+    export CXXFLAGS+=" ${CPPFLAGS}"
+    cmake -B build -S "$pkgname-$pkgver" \
+        -DSPDLOG_BUILD_BENCH=OFF \
+        -DSPDLOG_FMT_EXTERNAL=OFF \
+        -DSPDLOG_BUILD_SHARED=ON \
+        -DSPDLOG_BUILD_TESTS=ON \
+        -DCMAKE_BUILD_TYPE=None \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_INSTALL_LIBDIR=lib \
+        -Wno-dev
+    make -C build
+}
+
+check() {
+    make -C build test
+}
+
+package() {
+    make -C build DESTDIR="$pkgdir" install
+    install -Dm644 "$pkgname-$pkgver/LICENSE" -t "$pkgdir/usr/share/licenses/$pkgname/"
+}
