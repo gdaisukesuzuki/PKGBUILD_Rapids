@@ -1,14 +1,15 @@
 # Maintainer: Michael Schubert <mschu.dev at gmail>
 pkgname=python-numba
-pkgver=0.50.0
+pkgver=0.53.0dev0
 pkgrel=0
 pkgdesc="NumPy aware dynamic Python compiler using LLVM"
 url="http://numba.pydata.org/"
 arch=('i686' 'x86_64')
 license=('BSD')
-depends=('python-llvmlite>0.31.0' 'python-numpy>=1.10')
+depends=('python-llvmlite>=0.33.0' 'python-llvmlite<0.37' 'python-numpy>=1.15')
 makedepends=('cython')
-source=("https://github.com/numba/numba/archive/$pkgver.tar.gz")
+optdepends=('python-scipy>=1.0.0')
+source=(numba-$pkgver.tar.gz::"https://github.com/numba/numba/archive/$pkgver.tar.gz")
 sha256sums=('SKIP')
 
 build() {
@@ -16,7 +17,7 @@ build() {
   python setup.py build
 }
 
-check_disabled() { #ERROR: unittest/loader.py returned decorator, not test
+check_disabled() { #ERROR: TypeError None is not callable
   cd "$srcdir/numba-$pkgver"
   python setup.py test
 }
