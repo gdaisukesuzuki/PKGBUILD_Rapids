@@ -5,7 +5,7 @@
 
 pkgname=(rapids-cudf)
 _pkgname=cudf
-pkgver=0.17.0a.r141.g2df2f3a565
+pkgver=0.17.0a.r182.g3d44ed58ca
 pkgrel=1
 pkgdesc="RAPIDS Memory Manager"
 arch=('x86_64')
