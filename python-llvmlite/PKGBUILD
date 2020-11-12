@@ -1,19 +1,28 @@
 # Maintainer: Michael Schubert <mschu.dev at gmail>
 pkgname=python-llvmlite
 pkgver=0.36.0dev0
+# pkgver=0.35.0rc2
+#pkgver=0.34.0
 pkgrel=0
 pkgdesc="Lightweight LLVM python binding for writing JIT compilers"
 url="https://github.com/numba/llvmlite"
 arch=('i686' 'x86_64')
 license=('BSD')
-depends=('python' 'llvm-libs>=10.0.0' 'llvm-libs<12.0.0')
-makedepends=('cython' 'llvm>=10.0.0' 'llvm<12.0.0')
-source=(llvmlite-$pkgver.tar.gz::"https://github.com/numba/llvmlite/archive/v$pkgver.tar.gz")
-sha256sums=('SKIP')
+#depends=('python' 'llvm-libs>=7.0.0' 'llvm-libs<9.1.0')
+#makedepends=('cython' 'llvm>=7.0.0' 'llvm<9.1.0')
+depends=('python')
+# depends=('python' 'llvm9-libs')
+# makedepends=('cython')
+makedepends=('cython' 'llvm')
+source=(llvmlite-$pkgver.tar.gz::"https://github.com/numba/llvmlite/archive/v$pkgver.tar.gz"
+	build.py.patch)
+sha256sums=('SKIP' 'SKIP')
 
 build() {
+  cd "$srcdir"
+  patch -p0 < build.py.patch
   cd "$srcdir/llvmlite-$pkgver"
-  python setup.py build
+  PARALLEL_LEVEL=6 python setup.py build
 }
 
 check() {

@@ -1,0 +1,56 @@
+*** llvmlite-0.36.0dev0/ffi/build.py-dist	2020-11-12 11:16:17.300270461 +0900
+--- llvmlite-0.36.0dev0/ffi/build.py	2020-11-12 11:17:42.519685755 +0900
+***************
+*** 134,140 ****
+          print(warning + '\n')
+      else:
+  
+!         if not (out.startswith('10.0.') or out.startswith('9.0')):
+              msg = ("Building llvmlite requires LLVM 10.0.x or 9.0.x, got "
+                     "{!r}. Be sure to set LLVM_CONFIG to the right executable "
+                     "path.\nRead the documentation at "
+--- 134,140 ----
+          print(warning + '\n')
+      else:
+  
+!         if not (out.startswith('10.0.') or out.startswith('9.0') or out.startswith('11.0')):
+              msg = ("Building llvmlite requires LLVM 10.0.x or 9.0.x, got "
+                     "{!r}. Be sure to set LLVM_CONFIG to the right executable "
+                     "path.\nRead the documentation at "
+*** llvmlite-0.36.0dev0/ffi/transforms.cpp-dist	2020-11-12 13:00:29.566328570 +0900
+--- llvmlite-0.36.0dev0/ffi/transforms.cpp	2020-11-12 13:00:42.099542044 +0900
+***************
+*** 6,22 ****
+  
+  extern "C" {
+  
+- namespace llvm {
+-     inline PassManagerBuilder *unwrap(LLVMPassManagerBuilderRef P) {
+-         return reinterpret_cast<PassManagerBuilder*>(P);
+-     }
+- 
+-     inline LLVMPassManagerBuilderRef wrap(PassManagerBuilder *P) {
+-         return reinterpret_cast<LLVMPassManagerBuilderRef>(P);
+-     }
+- }
+- 
+- 
+  API_EXPORT(LLVMPassManagerBuilderRef)
+  LLVMPY_PassManagerBuilderCreate()
+  {
+--- 6,11 ----
+*** llvmlite-0.36.0dev0/ffi/custom_passes.cpp-dist	2020-11-12 13:02:10.915361248 +0900
+--- llvmlite-0.36.0dev0/ffi/custom_passes.cpp	2020-11-12 13:02:39.815086176 +0900
+***************
+*** 404,409 ****
+--- 404,413 ----
+                  // LLVM 10 postdomtree.dominates can handle instructions
+                  if ( domtree.dominates(incref, decref)
+                          && postdomtree.dominates(decref, incref) ){
++ #elif LLVM_VERSION_MAJOR == 11
++                 // LLVM 11 postdomtree.dominates can handle instructions
++                 if ( domtree.dominates(incref, decref)
++                         && postdomtree.dominates(decref, incref) ){
+  #else
+  #error Invalid LLVM version/LLVM_VERSION_MAJOR not defined
+  #endif
