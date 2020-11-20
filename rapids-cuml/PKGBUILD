@@ -5,7 +5,7 @@
 
 pkgname=(rapids-cuml)
 _pkgname=cuml
-pkgver=0.17.0a.r109.g25b29f55f
+pkgver=0.17.0a.r129.gb7bfb7eff
 pkgrel=1
 pkgdesc="RAPIDS ML"
 arch=('x86_64')
@@ -18,15 +18,15 @@ optional=('openucx')
 # source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git"
 source=("${_pkgname}::git+https://github.com/rapidsai/cuml.git#branch=branch-0.17"
   "setup.py.patch"
-  "knn.cuh.patch"
 )
 #  "qn_solvers.cuh.patch"
+#  "knn.cuh.patch"
 # sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
   # "setup.py.patch" "treelite_protobuf.patch.new")
   # "setup.py.patch" "treelite_protobuf.patch.patch")
 
 # sha256sums=('SKIP')
-sha256sums=('SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP')
 
 pkgver() {
     cd cuml
@@ -49,7 +49,7 @@ build() {
 #  patch -p0 < cusparse_wrappers.h.patch
 #  patch -p0 < qn_solvers.cuh.patch
   #patch -p0 < qn_linesearch.cuh.patch
-  patch -p0 < knn.cuh.patch
+#  patch -p0 < knn.cuh.patch
 #  patch -p0 < ml_cuda_utils.h.patch
   # patch -p0 < test_arima.py.patch
   # patch -p0 < treelite_protobuf.patch.patch 
